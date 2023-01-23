@@ -1,0 +1,63 @@
+{
+  "name": "minecraft-pack-tools",
+  "displayName": "Minecraft Pack Tools",
+  "description": "An extension more convenient Minecraft addon development.",
+  "version": "0.0.1",
+  "engines": { "vscode": "^1.74.0" },
+  "license": "MIT",
+  "author": {
+    "name": "ReBo"
+  },
+  "icon": "images/icon.png",
+  "publisher": "ReBo",
+    "repository": {
+        "url": "https://github.com/ReBo6250/Minecraft-Pack-Tools",
+        "type": "git"
+    },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "workspaceContains:**/manifest.json",
+    "onLanguage:json",
+    "onLanguage:jsonc",
+    "workspaceContains:**/*.mcfunction"
+  ],
+  "main": "./scripts/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "minecraft-pack-tools.bpManifest",
+        "title": "MPT: Generate Behavior Pack Manifest"
+      },
+      {
+        "command": "minecraft-pack-tools.rpManifest",
+        "title": "MPT: Generate Resource Pack Manifest"
+      },
+      {
+        "command": "minecraft-pack-tools.bpRpManifest",
+        "title": "MPT: Generate Behavior & Resource Pack Manifests"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "node ./test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.0.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "@vscode/test-electron": "^2.2.0",
+    "eslint": "^8.28.0",
+    "glob": "^8.0.3",
+    "lodash": "^4.17.21",
+    "mocha": "^10.1.0",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "uuid": "^9.0.0"
+  }
+}
