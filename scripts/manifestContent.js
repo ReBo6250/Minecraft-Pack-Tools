@@ -2,132 +2,177 @@ const { v4: uuidv4 } = require('uuid')
 
 const bpUuid = uuidv4()
 const rpUuid = uuidv4()
-const minEngineVersion = '1, 19, 50'
 
 module.exports.Bp=bp();
 module.exports.Rp=rp();
 module.exports.BpWithDependencies=bpWithDependencies();
 module.exports.RpWithDependencies=rpWithDependencies();
+module.exports.ScriptAPI=scriptAPI();
 
-function bp() {
-    let string;
-    string =
-`{\n\
-    "format_version": 2,\n\
-    "header": {\n\
-        "name": "pack.name",\n\
-        "description": "pack.description",\n\
-        "uuid": "${bpUuid}",\n\
-        "version": [1, 0, 0],\n\
-        "min_engine_version": [${minEngineVersion}]\n\
-    },\n\
-    "metadata": {\n\
-        "authors": ["pack.authors"]\n\
-        },\n\
-        "modules": [\n\
-            {\n\
-                "description": "pack.description",\n\
-            "version": [1, 0, 0], \n\
-             "uuid": "${uuidv4()}",\n\
-            "type": "data"\n\
-        }\n\
-    ]\n\
-}`;
-    return string;
+function bp () {
+    return {
+        format_version: 2,
+        header: {
+            name: "pack.name",
+            description: "pack.description",
+            uuid: bpUuid,
+            version: [1, 0, 0],
+            min_engine_version: global.minEngineVersion
+        },
+        metadata: {
+            authors: ["pack.authors"],
+            generated_with: {
+                minecraft_pack_tools: [global.extensionVersion]
+            }
+        },
+        modules: [
+            {
+                description: "pack.description",
+                version: [1, 0, 0], 
+                uuid: uuidv4(),
+                type: "data"
+            }
+        ]
+    }
 }
 
 function bpWithDependencies() {
-    let string;
-    string =
-`{\n\
-    "format_version": 2,\n\
-    "header": {\n\
-        "name": "pack.name",\n\
-        "description": "pack.description",\n\
-        "uuid": "${bpUuid}",\n\
-        "version": [1, 0, 0],\n\
-        "min_engine_version": [${minEngineVersion}]\n\
-    },\n\
-    "metadata": {\n\
-        "authors": ["pack.authors"]\n\
-        },\n\
-        "modules": [\n\
-            {\n\
-                "description": "pack.description",\n\
-            "version": [1, 0, 0], \n\
-             "uuid": "${uuidv4()}",\n\
-            "type": "data"\n\
-        }\n\
-    ],\n\
-	"dependencies": [\n\
-		{\n\
-             "uuid": "${rpUuid}",\n\
-			"version": [1, 0, 0]\n\
-		}\n\
-	]\n\
-}`;
-    return string;
+    return {
+        format_version: 2,
+        header: {
+            name: "pack.name",
+            description: "pack.description",
+            uuid: bpUuid,
+            version: [1, 0, 0],
+            min_engine_version: global.minEngineVersion
+         },
+         metadata: {
+            authors: ["pack.authors"],
+            generated_with: {
+                minecraft_pack_tools: [global.extensionVersion]
+            }
+        },
+        modules: [
+            {
+                description: "pack.description",
+                version: [1, 0, 0], 
+                uuid: uuidv4(),
+                type: "data"
+            }
+        ],
+        dependencies: [
+            {
+                uuid: rpUuid,
+                version: [1, 0, 0]
+            }
+        ]
+    }
 }
 
 function rp() {
-    let string;
-    string =
-`{\n\
-    "format_version": 2,\n\
-    "header": {\n\
-        "name": "pack.name",\n\
-        "description": "pack.description",\n\
-        "uuid": "${rpUuid}",\n\
-        "version": [1, 0, 0],\n\
-        "min_engine_version": [${minEngineVersion}]\n\
-    },\n\
-    "metadata": {\n\
-        "authors": ["pack.authors"]\n\
-        },\n\
-        "modules": [\n\
-            {\n\
-                "description": "pack.description",\n\
-            "version": [1, 0, 0], \n\
-             "uuid": "${uuidv4()}",\n\
-            "type": "resources"\n\
-        }\n\
-    ]\n\
-}`;
-    return string;
+    return {
+        format_version: 2,
+        header: {
+            name: "pack.name",
+            description: "pack.description",
+            uuid: rpUuid,
+            version: [1, 0, 0],
+            min_engine_version: global.minEngineVersion
+        },
+        metadata: {
+            authors: ["pack.authors"],
+            generated_with: {
+                minecraft_pack_tools: [global.extensionVersion]
+            }
+        },
+        modules: [
+            {
+                description: "pack.description",
+                version: [1, 0, 0], 
+                uuid: uuidv4(),
+                type: "resources"
+            }
+        ]
+    }
 }
 
 function rpWithDependencies() {
-    let string;
-    string =
-`{\n\
-    "format_version": 2,\n\
-    "header": {\n\
-        "name": "pack.name",\n\
-        "description": "pack.description",\n\
-        "uuid": "${rpUuid}",\n\
-        "version": [1, 0, 0],\n\
-        "min_engine_version": [${minEngineVersion}]\n\
-    },\n\
-    "metadata": {\n\
-        "authors": ["pack.authors"]\n\
-        },\n\
-        "modules": [\n\
-            {\n\
-                "description": "pack.description",\n\
-            "version": [1, 0, 0], \n\
-             "uuid": "${uuidv4()}",\n\
-            "type": "resources"\n\
-        }\n\
-    ],\n\
-	"dependencies": [\n\
-		{\n\
-             "uuid": "${bpUuid}",\n\
-			"version": [1, 0, 0]\n\
-		}\n\
-	]\n\
-}`;
-    return string;
+    return {
+        format_version: 2,
+        header: {
+            name: "pack.name",
+            description: "pack.description",
+            uuid: rpUuid,
+            version: [1, 0, 0],
+            min_engine_version: global.minEngineVersion
+         },
+         metadata: {
+            authors: ["pack.authors"],
+            generated_with: {
+                minecraft_pack_tools: [global.extensionVersion]
+            }
+        },
+        modules: [
+            {
+                description: "pack.description",
+                version: [1, 0, 0], 
+                uuid: uuidv4(),
+                type: "resources"
+            }
+        ],
+        dependencies: [
+            {
+                uuid: bpUuid,
+                version: [1, 0, 0]
+            }
+        ]
+    }
 }
+
+function scriptAPI() {
+    return {
+        format_version: 2,
+        header: {
+            name: "pack.name",
+            description: "pack.description",
+            uuid: uuidv4(),
+            version: [ 1, 0, 0 ],
+            min_engine_version: global.minEngineVersion
+        },
+        metadata: {
+            authors: ["pack.authors"],
+            generated_with: {
+                minecraft_pack_tools: [global.extensionVersion]
+            }
+        },
+        modules: [
+            {
+                type: "script",
+                language: "javascript",
+                uuid: uuidv4(),
+                entry: "scripts/server/script.js",
+                version: [ 1, 0, 0 ]
+            }
+        ],
+        capabilities: [ "script_eval" ],
+        dependencies: [
+            {
+                module_name: "@minecraft/server",
+                version: "1.1.0-beta"
+            },
+            {
+                module_name: "@minecraft/server-ui",
+                version: "1.0.0-beta"
+            }
+        ]
+    }
+}
+
+
+
+
+
+
 
 
 

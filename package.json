@@ -37,6 +37,10 @@
       {
         "command": "minecraft-pack-tools.bpRpManifest",
         "title": "MPT: Generate Behavior & Resource Pack Manifests"
+      },
+      {
+        "command": "minecraft-pack-tools.scriptAPIManifest",
+        "title": "MPT: Generate Script API Manifest"
       }
     ]
   },

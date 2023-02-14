@@ -1,5 +1,7 @@
 var fs = require('fs');
 const { readdir } = require('fs').promises;
+const vscode = require('vscode');
+
 
 module.exports = {
   filesInFolder
@@ -18,15 +20,27 @@ function filesInFolder(parentFolderPath, targetExtension, subExtension) {
           newFilePath =  filePath.replace(`.${subExtension} copy.${targetExtension}`, `${index}.${subExtension}.${targetExtension}`)
           index++;
           if (!fs.existsSync(newFilePath)) { 
-            fs.rename(filePath, newFilePath, function (err) { if (err) throw err; });
+            fs.rename(filePath, newFilePath, (error) => { if (error) console.log(error)});
             break; 
           }
         }
       }
       if (!filePath.includes(`.${subExtension}.${targetExtension}`) && !filePath.includes(`.${subExtension} copy`)) {
-        newFilePath = filePath.replace(`.${targetExtension}`, `.${subExtension}.${targetExtension}`)
-        fs.rename(filePath, newFilePath, function (err) { if (err) throw err; });
+        const SubExtensionList = ['animation_controller', 'animation', 'anim', 'at', 'behavior', 'bpac', 'bpa', 'bpe', 'bpi', 'entity', 'geo', 'loot', 'particle', 'rpac', 'rpa', 'rpe', 'rpi', 'r'] // Order is important here.
+        for (let index = 0; index < SubExtensionList.length; index++) {
+          const subExtensionListElement = SubExtensionList[index];
+          if (filePath.includes(`.${subExtensionListElement}`)) {
+            newFilePath = filePath.replace(`.${subExtensionListElement}.${targetExtension}`, `.${subExtension}.${targetExtension}`);
+            break;
+          }
+          else if(subExtensionListElement === SubExtensionList[SubExtensionList.length - 1]){
+            newFilePath = filePath.replace(`.${targetExtension}`, `.${subExtension}.${targetExtension}`)
+          }
+        }
+        fs.rename(filePath, newFilePath, (error) => { if (error) console.log(error)});
       }
+      vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+      // vscode.commands.executeCommand("vscode.open", newFilePath);
     });
   });
 }

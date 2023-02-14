@@ -4,6 +4,15 @@ const fs = require('fs');
 
 const workspaceFolders = vscode.workspace.workspaceFolders;
 
+global.extensionVersion = "2.5.0"
+global.minEngineVersion = [1, 19, 50]
+
+
+module.exports = {
+	checkManifests,
+    checkPackFolders
+}
+
 function resetGlobalVariablesHere() {
     global.bpManifestCount = 0;
     global.bpFolderPath = null;
@@ -17,7 +26,9 @@ function resetGlobalVariablesHere() {
     global.hasRpFolder = false;
     global.hasRpManifest = false;
 }
-
+function checkPackFolders(){
+    checkManifests();
+};
 function checkManifests() {
     resetGlobalVariablesHere();
     workspaceFolders.forEach(folder => {
@@ -90,6 +101,7 @@ function getRpPackInfo(folder) {
     global.rpaFolderPath = path.join(folder.uri.fsPath, 'animations')
     global.rpacFolderPath = path.join(folder.uri.fsPath, 'animation_controllers')
     global.rpiFolderPath = path.join(folder.uri.fsPath, 'items')
+    global.rpModelFolderPath = path.join(folder.uri.fsPath, 'model')
     global.rpAttachableFolderPath = path.join(folder.uri.fsPath, 'attachables')
     global.rpParticleFolderPath = path.join(folder.uri.fsPath, 'particles')
     global.rpFolderPath = folder.uri.fsPath
@@ -108,7 +120,3 @@ function jsonReader(filePath, cb) {
       }
     });
 };
-
-module.exports = {
-	checkManifests
-}
