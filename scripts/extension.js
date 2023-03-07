@@ -19,9 +19,20 @@ async function activate(context) {
 	let bpRpManifest = vscode.commands.registerCommand('minecraft-pack-tools.bpRpManifest', () => { vsCommand.createBpRpManifest(); });
 	let scriptAPIManifest = vscode.commands.registerCommand('minecraft-pack-tools.scriptAPIManifest', () => { vsCommand.createScriptAPIManifest(); });
 
-	let refreshWorkspace = vscode.workspace.onDidChangeWorkspaceFolders(() => { packFolders.checkPackFolders(); });
+	let onDidChangeWorkspaceFolders = vscode.workspace.onDidChangeWorkspaceFolders(() => { packFolders.checkPackFolders(); });
 
-	let renameFiles = vscode.workspace.onDidCreateFiles(() => { 
+	let onDidSaveTextDocument = vscode.workspace.onDidSaveTextDocument(() => { 
+		renameFiles();
+	});
+	let onDidCreateFiles = vscode.workspace.onDidCreateFiles(() => { 
+		renameFiles();
+	});
+	let onDidRenameFiles = vscode.workspace.onDidRenameFiles(() => { 
+		renameFiles();
+	});
+
+
+	function renameFiles() {
 		rename.filesInFolder(global.bpeFolderPath, 'json', 'bpe'); 
 		rename.filesInFolder(global.bpaFolderPath, 'json', 'bpa');
 		rename.filesInFolder(global.bpacFolderPath, 'json', 'bpac');
@@ -36,9 +47,8 @@ async function activate(context) {
 		rename.filesInFolder(global.rpiFolderPath, 'json', 'rpi');
 		rename.filesInFolder(global.rpModelFolderPath, 'json', 'geo');
 		rename.filesInFolder(global.rpParticleFolderPath, 'json', 'particle');
-	});
-	
-	context.subscriptions.push( bpManifest, rpManifest, bpRpManifest, renameFiles, refreshWorkspace, scriptAPIManifest);
+	}
+	context.subscriptions.push( bpManifest, rpManifest, bpRpManifest, onDidSaveTextDocument, onDidChangeWorkspaceFolders, onDidCreateFiles, onDidRenameFiles, scriptAPIManifest);
 }
 
 function deactivate() {}
