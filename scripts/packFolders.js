@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const workspaceFolders = vscode.workspace.workspaceFolders;
 
-global.extensionVersion = "2.5.1"
+global.extensionVersion = "2.5.2"
 global.minEngineVersion = [1, 19, 50]
 
 
