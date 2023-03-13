@@ -38,6 +38,8 @@ async function activate(context) {
 		rename.filesInFolder(global.bpacFolderPath, '.json', '.bpac');
 		rename.filesInFolder(global.bpiFolderPath, '.json', '.bpi');
 		rename.filesInFolder(global.bpLootTableFolderPath, '.json', '.loot');
+		rename.filesInFolder(global.bpDialogueFolderPath, '.json', '.dialogue');
+		rename.filesInFolder(global.bpTradingFolderPath, '.json', '.trade');
 		rename.filesInFolder(global.bpRecipeFolderPath, '.json', '.r');
 		rename.filesInFolder(global.bpFunctionFolderPath, '.mcfunction', '');
 		

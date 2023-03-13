@@ -29,7 +29,7 @@ function filesInFolder(parentFolderPath, targetExtension, subExtension) {
         }
       }
       if (!filePath.includes(`.`) || (!filePath.includes(`${subExtension}${targetExtension}`) && !filePath.includes(`${subExtension} copy`))) {
-        const SubExtensionList = ['.animation_controller', '.animation', '.anim', '.at', '.behavior', '.bpac', '.bpa', '.bpe', '.bpi', '.entity', '.geo', '.loot', '.particle', '.rpac', '.rpa', '.rpe', '.rpi', '.r'] // Order is important here.
+        const SubExtensionList = ['.ac', '.animation_controller', '.animation', '.anim', '.at', '.behavior', '.bpac', '.bpa', '.bpe', '.bpi', '.dialogue', '.entity', '.geo', '.loot', '.particle', '.rpac', '.rpa', '.rpe', '.rpi', '.r', '.trade'] // Order is important here.
         for (let index = 0; index < SubExtensionList.length; index++) {
           const subExtensionListElement = SubExtensionList[index];
           if (filePath.includes(`${subExtensionListElement}`)) {
@@ -38,14 +38,17 @@ function filesInFolder(parentFolderPath, targetExtension, subExtension) {
           }
           else if(subExtensionListElement === SubExtensionList[SubExtensionList.length - 1]){
             if (!filePath.includes(`.`)) {
-              newFilePath = filePath.replace(`${filePath}`, `${filePath}${subExtension}${targetExtension}`)
-            }
+              newFilePath = filePath.replace(`${filePath}`, `${filePath}${subExtension}${targetExtension}`);
+          }
             else {
-              newFilePath = filePath.replace(`${targetExtension}`, `${subExtension}${targetExtension}`)
+              newFilePath = filePath.replace(`${targetExtension}`, `${subExtension}${targetExtension}`);
             }
           }
         }
+        console.log(filePath);
+        console.log(newFilePath);
         fs.rename(filePath, newFilePath, (error) => { if (error) console.log(error)});
+        
       }
       
     });

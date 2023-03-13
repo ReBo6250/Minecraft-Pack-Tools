@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const workspaceFolders = vscode.workspace.workspaceFolders;
 
-global.extensionVersion = "2.5.2"
+global.extensionVersion = "2.5.3"
 global.minEngineVersion = [1, 19, 50]
 
 
@@ -84,29 +84,32 @@ function checkManifests() {
     });
 }
 function getBpPackInfo(folder) {
-    global.bpeFolderPath = path.join(folder.uri.fsPath, 'entities')
-    global.bpaFolderPath = path.join(folder.uri.fsPath, 'animations')
-    global.bpacFolderPath = path.join(folder.uri.fsPath, 'animation_controllers')
-    global.bpiFolderPath = path.join(folder.uri.fsPath, 'items')
-    global.bpFunctionFolderPath = path.join(folder.uri.fsPath, 'functions')
-    global.bpLootTableFolderPath = path.join(folder.uri.fsPath, 'loot')
-    global.bpRecipeFolderPath = path.join(folder.uri.fsPath, 'recipes')
+    global.bpacFolderPath = path.join(folder.uri.fsPath, 'animation_controllers');
+    global.bpaFolderPath = path.join(folder.uri.fsPath, 'animations');
+    global.bpDialogueFolderPath = path.join(folder.uri.fsPath, 'dialogue');
+    global.bpeFolderPath = path.join(folder.uri.fsPath, 'entities');
     global.bpFolderPath = folder.uri.fsPath
-    global.bpManifestPath = path.join(folder.uri.fsPath, 'manifest.json')
+    global.bpFunctionFolderPath = path.join(folder.uri.fsPath, 'functions');
+    global.bpiFolderPath = path.join(folder.uri.fsPath, 'items');
+    global.bpLootTableFolderPath = path.join(folder.uri.fsPath, 'loot');
+    global.bpManifestPath = path.join(folder.uri.fsPath, 'manifest.json');
+    global.bpRecipeFolderPath = path.join(folder.uri.fsPath, 'recipes');
+    global.bpSpawnRulePath = path.join(folder.uri.fsPath, 'spawn_rules');
+    global.bpTradingFolderPath = path.join(folder.uri.fsPath, 'trading');
     global.hasBpFolder = true;
 }
 
 function getRpPackInfo(folder) {
-    global.rpeFolderPath = path.join(folder.uri.fsPath, 'entity')
-    global.rpaFolderPath = path.join(folder.uri.fsPath, 'animations')
-    global.rpacFolderPath = path.join(folder.uri.fsPath, 'animation_controllers')
-    global.rpiFolderPath = path.join(folder.uri.fsPath, 'items')
-    global.rpModelFolderPath = path.join(folder.uri.fsPath, 'model')
-    global.rpAttachableFolderPath = path.join(folder.uri.fsPath, 'attachables')
-    global.rpParticleFolderPath = path.join(folder.uri.fsPath, 'particles')
-    global.rpFolderPath = folder.uri.fsPath
-    global.rpManifestPath = path.join(folder.uri.fsPath, 'manifest.json')
     global.hasRpFolder = true;
+    global.rpacFolderPath = path.join(folder.uri.fsPath, 'animation_controllers');
+    global.rpaFolderPath = path.join(folder.uri.fsPath, 'animations');
+    global.rpAttachableFolderPath = path.join(folder.uri.fsPath, 'attachables');
+    global.rpeFolderPath = path.join(folder.uri.fsPath, 'entity');
+    global.rpFolderPath = folder.uri.fsPath;
+    global.rpiFolderPath = path.join(folder.uri.fsPath, 'items');
+    global.rpManifestPath = path.join(folder.uri.fsPath, 'manifest.json');
+    global.rpModelFolderPath = path.join(folder.uri.fsPath, 'model');
+    global.rpParticleFolderPath = path.join(folder.uri.fsPath, 'particles');
 }
 
 function jsonReader(filePath, cb) {
