@@ -26,7 +26,7 @@ function filesInFolder(parentFolderPath, targetExtension, subExtension) {
           }
         }
         if (!filePath.includes(`.`) || (!filePath.includes(`${subExtension}${targetExtension}`) && !filePath.includes(`${subExtension} copy`))) {
-          const SubExtensionList = ['.ac', '.animation_controller', '.animation', '.anim', '.at', '.behavior', '.bpac', '.bpa', '.bpe', '.bpi', '.dialogue', '.entity', '.geo', '.loot', '.particle', '.rpac', '.rpa', '.rpe', '.rpi', '.r', '.trade'] // Order is important here.
+          const SubExtensionList = ['.ac','.animation_controllers', '.animation_controller', '.animation', '.anim', '.at', '.behavior', '.bpac', '.bpa', '.bpe', '.bpi', '.dialogue', '.entity', '.geo', '.loot', '.particle', '.rpac', '.rpa', '.rpe', '.rpi', '.r', '.trade'] // Order is important here.
           for (let index = 0; index < SubExtensionList.length; index++) {
             const subExtensionListElement = SubExtensionList[index];
             if (filePath.includes(`${subExtensionListElement}`)) {

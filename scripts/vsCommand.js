@@ -1,6 +1,5 @@
 const vscode = require('vscode');
 const fs = require('fs');
-const packFolders = require('./packFolders');
 const manifestContent = require('./manifestContent');
 
 
@@ -21,7 +20,6 @@ const jsonConverter = (obj, indent = 2) =>
 	indent).replace(/"\uE000([^\uE000]+)\uE000"/g, match => match.substr(2, match.length - 4).replace(/\\"/g, '"').replace(/\uE001/g, '\\\"'));
 
 function createBpManifest() {
-	packFolders.checkManifests();
 	setTimeout(() => {
 		if (!global.hasBpManifest) {
 			try { fs.writeFileSync(global.bpManifestPath, jsonConverter(manifestContent.Bp)); } 
@@ -32,7 +30,6 @@ function createBpManifest() {
 }
 
 function createRpManifest() {
-	packFolders.checkManifests();
 
 	setTimeout(() => {
 		if (!global.hasRpManifest) {
@@ -49,7 +46,6 @@ function createRpManifest() {
 	
 }
 function createBpRpManifest() {
-	packFolders.checkManifests();
 
 	setTimeout(() => {
 		if (!global.hasBpManifest && !global.hasRpManifest) {
@@ -63,7 +59,6 @@ function createBpRpManifest() {
 	}, 100);
 }
 function createScriptAPIManifest() {
-	packFolders.checkManifests();
 	setTimeout(() => {
 		if (!global.hasBpManifest) {
 			try { fs.writeFileSync(global.bpManifestPath, jsonConverter(manifestContent.ScriptAPI)); } 

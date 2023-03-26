@@ -1,25 +1,20 @@
 const vscode = require('vscode');
 const vsCommand = require('./vsCommand');
-const packFolders = require('./packFolders');
 const rename = require('./rename');
+const workspace = require('./workspace');
 
 module.exports = {
 	activate,
-	deactivate
 }
-
-/**
- * @param {vscode.ExtensionContext} context
- */
 async function activate(context) {
-	packFolders.checkManifests();
+	workspace.getPackFolders();
 
 	let bpManifest = vscode.commands.registerCommand('minecraft-pack-tools.bpManifest', () => { vsCommand.createBpManifest(); });
 	let rpManifest = vscode.commands.registerCommand('minecraft-pack-tools.rpManifest', () => { vsCommand.createRpManifest(); });
 	let bpRpManifest = vscode.commands.registerCommand('minecraft-pack-tools.bpRpManifest', () => { vsCommand.createBpRpManifest(); });
 	let scriptAPIManifest = vscode.commands.registerCommand('minecraft-pack-tools.scriptAPIManifest', () => { vsCommand.createScriptAPIManifest(); });
 
-	let onDidChangeWorkspaceFolders = vscode.workspace.onDidChangeWorkspaceFolders(() => { packFolders.checkPackFolders(); });
+	let onDidChangeWorkspaceFolders = vscode.workspace.onDidChangeWorkspaceFolders(() => { workspace.getPackFolders(); });
 
 	let onDidSaveTextDocument = vscode.workspace.onDidSaveTextDocument(() => { 
 		renameFiles();
