@@ -9,8 +9,9 @@ module.exports = {
 	getPackFolders
 }
 
-global.extensionVersion = "2.5.5"
+global.extensionVersion = "2.5.6"
 global.minEngineVersion = [1, 19, 50]
+global.extensionName = "minecraft-pack-tools"
 
 function resetGlobalVariablesHere() {
   global.bpManifestCount = 0;
@@ -94,7 +95,6 @@ async function getPackFolders() {
 };
 
 async function getBpPackInfo(bpPackFolderPath) {
-
   global.bpacFolderPath = path.join(bpPackFolderPath, 'animation_controllers');
   global.bpaFolderPath = path.join(bpPackFolderPath, 'animations');
   global.bpDialogueFolderPath = path.join(bpPackFolderPath, 'dialogue');
@@ -102,7 +102,7 @@ async function getBpPackInfo(bpPackFolderPath) {
   global.bpFolderPath = bpPackFolderPath
   global.bpFunctionFolderPath = path.join(bpPackFolderPath, 'functions');
   global.bpiFolderPath = path.join(bpPackFolderPath, 'items');
-  global.bpLootTableFolderPath = path.join(bpPackFolderPath, 'loot');
+  global.bpLootTableFolderPath = path.join(bpPackFolderPath, 'loot_tables');
   global.bpManifestPath = path.join(bpPackFolderPath, 'manifest.json');
   global.bpRecipeFolderPath = path.join(bpPackFolderPath, 'recipes');
   global.bpSpawnRulePath = path.join(bpPackFolderPath, 'spawn_rules');
@@ -116,10 +116,10 @@ async function getRpPackInfo(rpPackFolderPath) {
   global.rpaFolderPath = path.join(rpPackFolderPath, 'animations');
   global.rpAttachableFolderPath = path.join(rpPackFolderPath, 'attachables');
   global.rpeFolderPath = path.join(rpPackFolderPath, 'entity');
+  global.rpModelFolderPath = path.join(rpPackFolderPath, 'models');
   global.rpFolderPath = rpPackFolderPath;
   global.rpiFolderPath = path.join(rpPackFolderPath, 'items');
   global.rpManifestPath = path.join(rpPackFolderPath, 'manifest.json');
-  global.rpModelFolderPath = path.join(rpPackFolderPath, 'model');
   global.rpParticleFolderPath = path.join(rpPackFolderPath, 'particles');
 }
 
