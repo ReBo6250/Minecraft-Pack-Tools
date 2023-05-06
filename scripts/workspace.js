@@ -9,7 +9,7 @@ module.exports = {
 	getPackFolders
 }
 
-global.extensionVersion = "2.5.6"
+global.extensionVersion = "2.5.7"
 global.minEngineVersion = [1, 19, 50]
 global.extensionName = "minecraft-pack-tools"
 
