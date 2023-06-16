@@ -1,7 +1,7 @@
 const vscode = require('vscode');
 const path = require('path');
-var fs = require('fs');
 const { readdir } = require('fs').promises;
+const {jsonReader} = require('./utils')
 
 
 
@@ -132,20 +132,4 @@ async function getFilesInFolder(parentFolderPath) {
       else { filePaths.push(`${parentFolderPath}/${file.name}`); }
   }
   return filePaths;
-};
-
-function jsonReader(filePath, callBack) {
-  fs.readFile(
-    filePath, 
-    (err, fileData) => {
-      if (err) { return callBack && callBack(err); }
-      try {
-        const object = JSON.parse(fileData);
-        return callBack && callBack(null, object);
-      } 
-      catch (err) {
-        return callBack && callBack(err);
-      }
-    }
-  );
 };

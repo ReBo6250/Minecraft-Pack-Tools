@@ -2,7 +2,11 @@ const vscode = require('vscode');
 const vsCommand = require('./vsCommand');
 const rename = require('./rename');
 const workspace = require('./workspace');
-const utils = require('./utils');
+const {getConfiguration} = require('./utils');
+
+const { startServerCommand, stopServerCommand } = require("./constants");
+
+var AutoReloader = require("./autoReloader");
 
 module.exports = {
 	activate,
@@ -27,26 +31,34 @@ async function activate(context) {
 		renameFiles();
 	});
 
+	const autoReloader = new AutoReloader();
+    const startCommand = vscode.commands.registerCommand(startServerCommand, () =>
+        autoReloader.start()
+    );
+    const stopCommand = vscode.commands.registerCommand(stopServerCommand, () =>
+        autoReloader.stop()
+    );
+    context.subscriptions.concat(autoReloader, startCommand, stopCommand);
 
 	function renameFiles() {
-		let AutoRenameBpac = utils.getConfiguration("auto-rename-bpac");
-		let AutoRenameBpa = utils.getConfiguration("auto-rename-bpa");
-		let AutoRenameDialogue = utils.getConfiguration("auto-rename-dialogue");
-		let AutoRenameBpe = utils.getConfiguration("auto-rename-bpe");
-		let AutoRenameFunction = utils.getConfiguration("auto-rename-function");
-		let AutoRenameBpi = utils.getConfiguration("auto-rename-bpi");
-		let AutoRenameLoot = utils.getConfiguration("auto-rename-loot");
-		let AutoRenameRecipe = utils.getConfiguration("auto-rename-recipe");
-		let AutoRenameTrade = utils.getConfiguration("auto-rename-trade");
+		let AutoRenameBpac = getConfiguration("auto-rename-bpac");
+		let AutoRenameBpa = getConfiguration("auto-rename-bpa");
+		let AutoRenameDialogue = getConfiguration("auto-rename-dialogue");
+		let AutoRenameBpe = getConfiguration("auto-rename-bpe");
+		let AutoRenameFunction = getConfiguration("auto-rename-function");
+		let AutoRenameBpi = getConfiguration("auto-rename-bpi");
+		let AutoRenameLoot = getConfiguration("auto-rename-loot");
+		let AutoRenameRecipe = getConfiguration("auto-rename-recipe");
+		let AutoRenameTrade = getConfiguration("auto-rename-trade");
 
 
-		let AutoRenameRpac = utils.getConfiguration("auto-rename-rpac");
-		let AutoRenameRpa = utils.getConfiguration("auto-rename-rpa");
-		let AutoRenameAt = utils.getConfiguration("auto-rename-at");
-		let AutoRenameRpe = utils.getConfiguration("auto-rename-rpe");
-		let AutoRenameRpi = utils.getConfiguration("auto-rename-rpi");
-		let AutoRenameGeo = utils.getConfiguration("auto-rename-geo");
-		let AutoRenameParticle = utils.getConfiguration("auto-rename-particle");
+		let AutoRenameRpac = getConfiguration("auto-rename-rpac");
+		let AutoRenameRpa = getConfiguration("auto-rename-rpa");
+		let AutoRenameAt = getConfiguration("auto-rename-at");
+		let AutoRenameRpe = getConfiguration("auto-rename-rpe");
+		let AutoRenameRpi = getConfiguration("auto-rename-rpi");
+		let AutoRenameGeo = getConfiguration("auto-rename-geo");
+		let AutoRenameParticle = getConfiguration("auto-rename-particle");
 
 		if (AutoRenameBpac) { rename.filesInFolder(global.bpacFolderPath, '.json', '.bpac'); }
 		if (AutoRenameBpa) { rename.filesInFolder(global.bpaFolderPath, '.json', '.bpa'); }

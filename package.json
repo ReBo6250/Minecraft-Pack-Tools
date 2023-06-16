@@ -3,17 +3,19 @@
   "displayName": "Minecraft Pack Tools",
   "description": "An extension more convenient Minecraft addon development.",
   "version": "0.0.1",
-  "engines": { "vscode": "^1.74.0" },
+  "engines": {
+    "vscode": "^1.74.0"
+  },
   "license": "MIT",
   "author": {
     "name": "ReBo"
   },
   "icon": "images/icon.png",
   "publisher": "ReBo",
-    "repository": {
-        "url": "https://github.com/ReBo6250/Minecraft-Pack-Tools",
-        "type": "git"
-    },
+  "repository": {
+    "url": "https://github.com/ReBo6250/Minecraft-Pack-Tools",
+    "type": "git"
+  },
   "categories": [
     "Other"
   ],
@@ -26,8 +28,13 @@
   "main": "./scripts/extension.js",
   "contributes": {
     "configuration": {
-      "title": "Minecraft Pack Tool",
+      "title": "Minecraft Pack Tools",
       "properties": {
+        "minecraft-pack-tools.port": {
+          "description": "Websocket server port.",
+          "type": "integer",
+          "default": 9999
+        },
         "minecraft-pack-tools.auto-rename-bpa": {
           "description": "Auto Rename BP animation files.",
           "type": "boolean",
@@ -109,7 +116,7 @@
           "default": true
         }
       }
-  },
+    },
     "commands": [
       {
         "command": "minecraft-pack-tools.bpManifest",
@@ -126,6 +133,14 @@
       {
         "command": "minecraft-pack-tools.scriptAPIManifest",
         "title": "MPT: Generate Script API Manifest"
+      },
+      {
+        "command": "minecraft-pack-tools.startServer",
+        "title": "MPT: Start Server"
+      },
+      {
+        "command": "minecraft-pack-tools.stopServer",
+        "title": "MPT: Stop Server"
       }
     ]
   },
@@ -147,6 +162,7 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "ws": "^8.13.0"
   }
 }
