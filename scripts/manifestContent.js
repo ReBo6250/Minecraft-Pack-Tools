@@ -1,4 +1,6 @@
 const { v4: uuidv4 } = require('uuid')
+const { extensionVersion, minEngineVersion } = require('./constants');
+
 
 const bpUuid = uuidv4()
 const rpUuid = uuidv4()
@@ -17,12 +19,12 @@ function bp () {
             description: "pack.description",
             uuid: bpUuid,
             version: [1, 0, 0],
-            min_engine_version: global.minEngineVersion
+            min_engine_version: minEngineVersion
         },
         metadata: {
             authors: ["pack.authors"],
             generated_with: {
-                minecraft_pack_tools: [global.extensionVersion]
+                minecraft_pack_tools: [extensionVersion]
             }
         },
         modules: [
@@ -44,12 +46,12 @@ function bpWithDependencies() {
             description: "pack.description",
             uuid: bpUuid,
             version: [1, 0, 0],
-            min_engine_version: global.minEngineVersion
+            min_engine_version: minEngineVersion
          },
          metadata: {
             authors: ["pack.authors"],
             generated_with: {
-                minecraft_pack_tools: [global.extensionVersion]
+                minecraft_pack_tools: [extensionVersion]
             }
         },
         modules: [
@@ -77,12 +79,12 @@ function rp() {
             description: "pack.description",
             uuid: rpUuid,
             version: [1, 0, 0],
-            min_engine_version: global.minEngineVersion
+            min_engine_version: minEngineVersion
         },
         metadata: {
             authors: ["pack.authors"],
             generated_with: {
-                minecraft_pack_tools: [global.extensionVersion]
+                minecraft_pack_tools: [extensionVersion]
             }
         },
         modules: [
@@ -104,12 +106,12 @@ function rpWithDependencies() {
             description: "pack.description",
             uuid: rpUuid,
             version: [1, 0, 0],
-            min_engine_version: global.minEngineVersion
+            min_engine_version: minEngineVersion
          },
          metadata: {
             authors: ["pack.authors"],
             generated_with: {
-                minecraft_pack_tools: [global.extensionVersion]
+                minecraft_pack_tools: [extensionVersion]
             }
         },
         modules: [
@@ -137,12 +139,12 @@ function scriptAPI() {
             description: "pack.description",
             uuid: uuidv4(),
             version: [ 1, 0, 0 ],
-            min_engine_version: global.minEngineVersion
+            min_engine_version: minEngineVersion
         },
         metadata: {
             authors: ["pack.authors"],
             generated_with: {
-                minecraft_pack_tools: [global.extensionVersion]
+                minecraft_pack_tools: [extensionVersion]
             }
         },
         modules: [
