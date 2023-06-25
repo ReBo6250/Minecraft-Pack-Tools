@@ -53,12 +53,8 @@ async function activate(context) {
 	);
 
 	const autoReloader = new AutoReloader();
-    const commandStartServerDisposable = vscode.commands.registerCommand(commandStartServer, () =>
-        autoReloader.start()
-    );
-    const commandStopServerDisposable = vscode.commands.registerCommand(commandStopServer, () =>
-        autoReloader.stop()
-    );
+    const commandStartServerDisposable = vscode.commands.registerCommand(commandStartServer, () => autoReloader.start() );
+    const commandStopServerDisposable = vscode.commands.registerCommand(commandStopServer, () => autoReloader.stop() );
 	
     context.subscriptions.concat(autoReloader, commandStartServerDisposable, commandStopServerDisposable);
 	context.subscriptions.push(bpManifestDisposable, rpManifestDisposable, bpRpManifestDisposable, onDidSaveTextDocumentDisposable, onDidDeleteFilesDisposable, onDidChangeWorkspaceFoldersDisposable, onDidCreateFilesDisposable, onDidRenameFilesDisposable, scriptAPIManifestDisposable);

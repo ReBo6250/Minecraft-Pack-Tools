@@ -20,9 +20,9 @@
     "Other"
   ],
   "activationEvents": [
-    "workspaceContains:**/manifest.json",
     "onLanguage:json",
     "onLanguage:jsonc",
+    "workspaceContains:**/manifest.json",
     "workspaceContains:**/*.mcfunction"
   ],
   "main": "./scripts/extension.js",

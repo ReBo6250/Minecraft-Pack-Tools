@@ -9,21 +9,22 @@ function getConfiguration(section) {
     return vscode.workspace.getConfiguration(extensionName).get(section)
 }
 
-async function jsonReader(filePath, callBack) {
-    fs.readFile(
-        filePath,
-        (error, fileData) => {
-            if (error) { return callBack && callBack(error); }
-            try {
-                const object = JSON.parse(fileData);
-                return callBack && callBack(null, object);
-            }
-            catch (error) {
-                return callBack && callBack(error);
-            }
+function jsonReader(filePath) {
+    return new Promise((resolve, reject) => {
+      fs.readFile(filePath, 'utf8', (error, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          try {
+            const jsonData = JSON.parse(data);
+            resolve(jsonData);
+          } catch (parseError) {
+            reject(parseError);
+          }
         }
-    );
-};
+      });
+    });
+  }
 
 function jsonConverter(object, indent = 2) {
     try {
@@ -67,9 +68,9 @@ async function getFolders(parentFolderPath) {
 };
 
 module.exports = {
-    getFolders,
-    getFilesInFolder,
     getConfiguration,
+    getFilesInFolder,
+    getFolders,
     jsonConverter,
     jsonReader
   }

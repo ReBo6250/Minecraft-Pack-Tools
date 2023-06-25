@@ -5,113 +5,160 @@ const manifestContent = require('./manifestContent');
 var fs = require('fs');
 
 class PackWorkspace {
-    constructor() {
-        this.#resetPackVariables()
+  constructor() {
+      this.#resetPackVariables()
+  }
+
+  #resetPackVariables() {
+      this.bpManifestCount = 0;
+      this.bpFolderPath = null;
+      this.bpManifestPath = null;
+      this.hasBpManifest = false;
+      this.rpManifestCount = 0;
+      this.rpFolderPath= null;
+      this.rpManifestPath= null;
+      this.hasRpManifest = false;
+  }
+
+  #findManifests(dir) {
+    const files = fs.readdirSync(dir);
+    let manifestPaths = [];
+  
+    for (const file of files) {
+      const filePath = path.join(dir, file);
+      const stats = fs.statSync(filePath);
+  
+      if (stats.isDirectory()) {
+        const nestedManifestPaths = this.#findManifests(filePath);
+        manifestPaths = manifestPaths.concat(nestedManifestPaths);
+      } else if (file === 'manifest.json') {
+        manifestPaths.push(filePath);
+      }
     }
   
-    #resetPackVariables() {
-        this.bpManifestCount = 0;
-        this.bpFolderPath = null;
-        this.bpManifestPath = null;
-        this.hasBpManifest = false;
-        this.rpManifestCount = 0;
-        this.rpFolderPath= null;
-        this.rpManifestPath= null;
-        this.hasRpManifest = false;
-    }
-  
-    getPackWorkspaceInfo(workspaceFolders) {
-        this.#resetPackVariables();
-        workspaceFolders.forEach(
-        folder => {
-            getFilesInFolder(folder.uri.fsPath).then(
-                async (filePaths) => {
-                    await filePaths.forEach(
-                        async (filePath) => {
-                            if (filePath.includes(`manifest.json`)) {
-                                await jsonReader(filePath,
-                                    async (error, manifest) => {
-                                        if (error) { vscode.showErrorMessage('Invalid Manifest Detected.') }
-                                        let modules = JSON.stringify(manifest.modules);
-                                        modules = modules.slice(1,-1);
-
-                                        let module;
-                                        try { module = JSON.parse(modules); } 
-                                        catch (error) { vscode.showErrorMessage('Invalid Manifest module Detected.'); }
-
-                                        const packFolderPath = filePath.replace(`/manifest.json`,``);
-                                        if (module.type.toString() === 'data') {
-                                            this.bpManifestCount++;
-                                            this.hasBpManifest = true;
-                                            await this.#getBpPackInfo(packFolderPath);
-                                        }
-                                        else if (module.type.toString() === 'resources') {
-                                            this.rpManifestCount++;
-                                            this.hasRpManifest = true;
-                                            await this.#getRpPackInfo(packFolderPath);
-                                        }
-                                        else if (module.type.toString() === 'world_template') {}
-                                    }
-                                );
-                            }
-                        }
-                    )
-                }
-            );
+    return manifestPaths;
+  }
+  #getTempBpFolder(workspaceFolders) {
+    let tempFolders = [];
+    for (const folder of workspaceFolders) {
+      getFolders(folder.uri.fsPath).then((folderPaths) => {
+        for (const folderPath of folderPaths) {
+          if (
+            folderPath.includes('bp0') ||
+            folderPath.includes('Behavior') ||
+            folderPath.includes('Behavior Pack') ||
+            folderPath.includes('BP') ||
+            folderPath.includes('_BP')
+          ) 
+          { tempFolders.push(folderPath) }
         }
-    );
-    setTimeout(() => {
-        if (!this.hasBpManifest || !this.hasRpManifest) {
-            workspaceFolders.forEach(
-              folder => {
-                getFolders(folder.uri.fsPath).then(
-                    (folderPaths) => {
-                        folderPaths.forEach(
-                            (folderPath) => {
-                                if (folderPath.includes('bp0') || folderPath.includes('Behavior') || folderPath.includes('Behavior Pack') || folderPath.includes('BP') || folderPath.includes('_BP')) {
-                                    this.#getBpPackInfo(folderPath); }
-                                else if (folderPath.includes('rp0') || folderPath.includes('Resource') || folderPath.includes('Resource Pack') || folderPath.includes('RP') || folderPath.includes('_RP')) { 
-                                    this.#getRpPackInfo(folderPath); }
-                            }
-                        )
-                    }
-                );
-              }
-            );
-          }
-    }, 1000);
+        
+        this.#getBpPackInfo(tempFolders[tempFolders.length - 1]); 
+        vscode.window.showInformationMessage(`No Behavior Pack Manifest found. Selecting ${tempFolders[tempFolders.length - 1]} as a default BP folder.`);
+      });
+    }
+  }
+  
+  #getTempRpFolder(workspaceFolders) {
+      let tempFolders = [];
+      for (const folder of workspaceFolders) {
+      getFolders(folder.uri.fsPath).then((folderPaths) => {
+        for (const folderPath of folderPaths) {
+          if (
+            folderPath.includes('rp0') ||
+            folderPath.includes('Resource') ||
+            folderPath.includes('Resource Pack') ||
+            folderPath.includes('RP') ||
+            folderPath.includes('_RP')
+          ) 
+          { tempFolders.push(folderPath) }
+        }
+        
+        this.#getRpPackInfo(tempFolders[tempFolders.length - 1]);
+        vscode.window.showInformationMessage(`No Resource Pack Manifest found. Selecting ${tempFolders[tempFolders.length - 1]} as a default RP folder.`);
+      });
+    }
+  }
+  getPackWorkspaceInfo(workspaceFolders) {
+    this.#resetPackVariables();
+    if (workspaceFolders) {
+      for (const workspaceFolder of workspaceFolders) {
+        const workspacePath = workspaceFolder.uri.fsPath;
+        const manifestPaths = this.#findManifests(workspacePath);
+  
+        if (manifestPaths.length > 0) {
+          manifestPaths.forEach((manifestPath, index) => {
+            jsonReader(manifestPath)
+              .then((manifest) => {
+                let modules = JSON.stringify(manifest.modules);
+                modules = modules.slice(1, -1);
     
+                let module;
+                try { module = JSON.parse(modules); } 
+                catch (error) { vscode.showErrorMessage('Error:', error); }
+    
+                const packFolderPath = manifestPath.replace('/manifest.json', '');
+                if (module.type.toString() === 'data') {
+                  this.bpManifestCount++;
+                  this.hasBpManifest = true;
+                  this.#getBpPackInfo(packFolderPath);
+                } 
+                else if (module.type.toString() === 'resources') {
+                  this.rpManifestCount++;
+                  this.hasRpManifest = true;
+                  this.#getRpPackInfo(packFolderPath);
+                } 
+                else if (module.type.toString() === 'world_template') {
+                  // Handle 'world_template' case
+                }
+                if (index === manifestPaths.length - 1) {
+                  if (!this.hasBpManifest) { this.#getTempBpFolder(workspaceFolders);}
+                  if (!this.hasRpManifest) { this.#getTempRpFolder(workspaceFolders);}
+                }
+
+              })
+              .catch((error) => { vscode.showErrorMessage('Error:', error); });
+          });
+        }
+        else {
+          this.#getTempBpFolder(workspaceFolders)
+          this.#getTempRpFolder(workspaceFolders)
+        }
+      }
+    }
   };
+  
+  
 
   
-    async #getBpPackInfo(folder) {
-        this.bpacFolderPath = path.join(folder, 'animation_controllers');
-        this.bpaFolderPath = path.join(folder, 'animations');
-        this.bpDialogueFolderPath = path.join(folder, 'dialogue');
-        this.bpeFolderPath = path.join(folder, 'entities');
-        this.bpFolderPath = folder
-        this.bpFunctionFolderPath = path.join(folder, 'functions');
-        this.bpiFolderPath = path.join(folder, 'items');
-        this.bpLootTableFolderPath = path.join(folder, 'loot_tables');
-        this.bpManifestPath = path.join(folder, 'manifest.json');
-        this.bpRecipeFolderPath = path.join(folder, 'recipes');
-        this.bpSpawnRulePath = path.join(folder, 'spawn_rules');
-        this.bpTradingFolderPath = path.join(folder, 'trading');
-        this.hasBpFolder = true;
-    }
+  async #getBpPackInfo(folder) {
+      this.bpacFolderPath = path.join(folder, 'animation_controllers');
+      this.bpaFolderPath = path.join(folder, 'animations');
+      this.bpDialogueFolderPath = path.join(folder, 'dialogue');
+      this.bpeFolderPath = path.join(folder, 'entities');
+      this.bpFolderPath = folder
+      this.bpFunctionFolderPath = path.join(folder, 'functions');
+      this.bpiFolderPath = path.join(folder, 'items');
+      this.bpLootTableFolderPath = path.join(folder, 'loot_tables');
+      this.bpManifestPath = path.join(folder, 'manifest.json');
+      this.bpRecipeFolderPath = path.join(folder, 'recipes');
+      this.bpSpawnRulePath = path.join(folder, 'spawn_rules');
+      this.bpTradingFolderPath = path.join(folder, 'trading');
+      this.hasBpFolder = true;
+  }
 
-    async #getRpPackInfo(folder) {
-        this.hasRpFolder = true;
-        this.rpacFolderPath = path.join(folder, 'animation_controllers');
-        this.rpaFolderPath = path.join(folder, 'animations');
-        this.rpAttachableFolderPath = path.join(folder, 'attachables');
-        this.rpeFolderPath = path.join(folder, 'entity');
-        this.rpModelFolderPath = path.join(folder, 'models');
-        this.rpFolderPath = folder;
-        this.rpiFolderPath = path.join(folder, 'items');
-        this.rpManifestPath = path.join(folder, 'manifest.json');
-        this.rpParticleFolderPath = path.join(folder, 'particles');
-    }
+  async #getRpPackInfo(folder) {
+      this.hasRpFolder = true;
+      this.rpacFolderPath = path.join(folder, 'animation_controllers');
+      this.rpaFolderPath = path.join(folder, 'animations');
+      this.rpAttachableFolderPath = path.join(folder, 'attachables');
+      this.rpeFolderPath = path.join(folder, 'entity');
+      this.rpModelFolderPath = path.join(folder, 'models');
+      this.rpFolderPath = folder;
+      this.rpiFolderPath = path.join(folder, 'items');
+      this.rpManifestPath = path.join(folder, 'manifest.json');
+      this.rpParticleFolderPath = path.join(folder, 'particles');
+  }
   
 	renameFiles() {
     
@@ -134,7 +181,7 @@ class PackWorkspace {
 		let autoRenameParticleAllowed = getConfiguration("auto-rename-particle"); if (autoRenameParticleAllowed) { this.#renameFilesInFolder(this.rpParticleFolderPath, '.json', '.particle'); }
 	}
   
-    #renameFilesInFolder(parentFolderPath, targetExtension, subExtension) {
+  #renameFilesInFolder(parentFolderPath, targetExtension, subExtension) {
       if(!fs.existsSync(parentFolderPath)) {return;}
       else {
         getFilesInFolder(parentFolderPath).then((filePaths) => { 

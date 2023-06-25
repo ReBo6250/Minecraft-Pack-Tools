@@ -1,4 +1,4 @@
-const { WebSocketServer, WebSocket } = require("ws");
+const { WebSocketServer } = require("ws");
 const { v4: genUUID } = require("uuid");
 
 class MinecraftClient {
@@ -27,9 +27,7 @@ class MinecraftClient {
             this.client.on("message", (data) => {
                 const res = JSON.parse(data.toString());
 
-                if (res.header.requestId !== uuid) {
-                    return;
-                }
+                if (res.header.requestId !== uuid) { return; }
 
                 resolve({
                     message: res.body.statusMessage,

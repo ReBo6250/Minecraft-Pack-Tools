@@ -71,7 +71,7 @@ module.exports = class AutoReloader {
             const { status, message } = await client.sendCommand("reload");
             if (status === 0) {
                 return client.sendMessage(
-                    // "[MPT Reloader] Reloading was successful."
+                    "[MPT Reloader] Reloading was successful."
                 );
             }
             client.sendMessage(
