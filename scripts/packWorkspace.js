@@ -53,8 +53,10 @@ class PackWorkspace {
           { tempFolders.push(folderPath) }
         }
         
-        this.#getBpPackInfo(tempFolders[tempFolders.length - 1]); 
-        vscode.window.showInformationMessage(`No Behavior Pack Manifest found. Selecting ${tempFolders[tempFolders.length - 1]} as a default BP folder.`);
+        if (tempFolders[tempFolders.length - 1] !== undefined) {
+          this.#getBpPackInfo(tempFolders[tempFolders.length - 1]); 
+          // vscode.window.showInformationMessage(`No Behavior Pack Manifest found. Selecting ${tempFolders[tempFolders.length - 1]} as a default BP folder.`);
+        } 
       });
     }
   }
@@ -73,14 +75,15 @@ class PackWorkspace {
           ) 
           { tempFolders.push(folderPath) }
         }
-        
-        this.#getRpPackInfo(tempFolders[tempFolders.length - 1]);
-        vscode.window.showInformationMessage(`No Resource Pack Manifest found. Selecting ${tempFolders[tempFolders.length - 1]} as a default RP folder.`);
+        if (tempFolders[tempFolders.length - 1] !== undefined) {
+          this.#getRpPackInfo(tempFolders[tempFolders.length - 1]);
+          // vscode.window.showInformationMessage(`No Resource Pack Manifest found. Selecting ${tempFolders[tempFolders.length - 1]} as a default RP folder.`);
+        } 
       });
     }
   }
   getPackWorkspaceInfo(workspaceFolders) {
-    this.#resetPackVariables();
+    // this.#resetPackVariables();
     if (workspaceFolders) {
       for (const workspaceFolder of workspaceFolders) {
         const workspacePath = workspaceFolder.uri.fsPath;
