@@ -53,12 +53,12 @@ module.exports = class AutoReloader {
             false,
             false
         );
-        watcher.onDidChange(async (uri) => await this.reload(uri));
-        watcher.onDidChange((uri) => {
-            setTimeout(function () {
-                this.reload(uri);
-            }, 1000); 
-        })
+        watcher.onDidChange(async (uri) => {
+            setTimeout(() => { this.reloadSilent(uri); }, 200);
+            setTimeout(() => { this.reloadSilent(uri); }, 500);
+            setTimeout(() => { this.reloadSilent(uri); }, 1000);
+            await this.reload(uri);
+        });
 
         watcher.onDidCreate(async (uri) => await this.reload(uri));
         watcher.onDidDelete(async (uri) => await this.reload(uri));
@@ -78,6 +78,14 @@ module.exports = class AutoReloader {
                 `[MPT Reloader] Reload failed.\nError: ${message}`
             );
         }
+        this.output.appendLine(`Reloaded: ${uri.fsPath}`);
+    }
+
+    async reloadSilent(uri) {
+        for (const client of this.server.clients) {
+            await client.sendCommand("reload");
+        }
+        
         this.output.appendLine(`Reloaded: ${uri.fsPath}`);
     }
 }

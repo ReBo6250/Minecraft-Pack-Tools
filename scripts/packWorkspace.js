@@ -100,7 +100,7 @@ class PackWorkspace {
                 try { module = JSON.parse(modules); } 
                 catch (error) { vscode.showErrorMessage('Error:', error); }
     
-                const packFolderPath = manifestPath.replace('/manifest.json', '');
+                const packFolderPath = manifestPath.replace('manifest.json', '');
                 if (module.type.toString() === 'data') {
                   this.bpManifestCount++;
                   this.hasBpManifest = true;
@@ -164,7 +164,6 @@ class PackWorkspace {
   }
   
 	renameFiles() {
-    
 		let autoRenameBpacAllowed = getConfiguration("auto-rename-bpac"); if (autoRenameBpacAllowed) { this.#renameFilesInFolder(this.bpacFolderPath, '.json', '.bpac'); };
     let autoRenameBpaAllowed = getConfiguration("auto-rename-bpa"); if (autoRenameBpaAllowed) { this.#renameFilesInFolder(this.bpaFolderPath, '.json', '.bpa'); };
 		let autoRenameDialogueAllowed = getConfiguration("auto-rename-dialogue"); if (autoRenameDialogueAllowed) { this.#renameFilesInFolder(this.bpDialogueFolderPath, '.json', '.dialogue'); }
