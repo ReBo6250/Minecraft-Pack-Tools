@@ -83,7 +83,6 @@ class PackWorkspace {
     }
   }
   getPackWorkspaceInfo(workspaceFolders) {
-    // this.#resetPackVariables();
     if (workspaceFolders) {
       for (const workspaceFolder of workspaceFolders) {
         const workspacePath = workspaceFolder.uri.fsPath;
@@ -159,8 +158,10 @@ class PackWorkspace {
       this.rpModelFolderPath = path.join(folder, 'models');
       this.rpFolderPath = folder;
       this.rpiFolderPath = path.join(folder, 'items');
+      this.rpRenderPath = path.join(folder, 'render_controllers');
       this.rpManifestPath = path.join(folder, 'manifest.json');
       this.rpParticleFolderPath = path.join(folder, 'particles');
+      this.rpUiFolderPath = path.join(folder, 'ui');
   }
   
 	renameFiles() {
@@ -178,6 +179,7 @@ class PackWorkspace {
 		let autoRenameRpaAllowed = getConfiguration("auto-rename-rpa"); if (autoRenameRpaAllowed) { this.#renameFilesInFolder(this.rpaFolderPath, '.json', '.rpa'); }
 		let autoRenameAtAllowed = getConfiguration("auto-rename-at"); if (autoRenameAtAllowed) { this.#renameFilesInFolder(this.rpAttachableFolderPath, '.json', '.at'); }
 		let autoRenameRpeAllowed = getConfiguration("auto-rename-rpe"); if (autoRenameRpeAllowed) { this.#renameFilesInFolder(this.rpeFolderPath, '.json', '.rpe'); }
+		let autoRenameRenderAllowed = getConfiguration("auto-rename-rpe"); if (autoRenameRenderAllowed) { this.#renameFilesInFolder(this.rpRenderPath, '.json', '.render'); }
 		let autoRenameRpiAllowed = getConfiguration("auto-rename-rpi"); if (autoRenameRpiAllowed) { this.#renameFilesInFolder(this.rpiFolderPath, '.json', '.rpi'); }
 		let autoRenameGeoAllowed = getConfiguration("auto-rename-geo"); if (autoRenameGeoAllowed) { this.#renameFilesInFolder(this.rpModelFolderPath, '.json', '.geo'); }
 		let autoRenameParticleAllowed = getConfiguration("auto-rename-particle"); if (autoRenameParticleAllowed) { this.#renameFilesInFolder(this.rpParticleFolderPath, '.json', '.particle'); }
@@ -204,7 +206,7 @@ class PackWorkspace {
                 }
             }
             if (!filePath.includes(`.`) || (!filePath.includes(`${subExtension}${targetExtension}`) && !filePath.includes(`${subExtension} copy`))) {
-                const SubExtensionList = ['.ac','.animation_controllers', '.animation_controller', '.animation', '.anim', '.at', '.behavior', '.bpac', '.bpa', '.bpe', '.bpi', '.dialogue', '.entity', '.geo', '.loot', '.particle', '.rpac', '.rpa', '.rpe', '.rpi', '.r', '.trade'] // Order is important here.
+                const SubExtensionList = ['.ac','.animation_controllers', '.animation_controller', '.animation', '.anim', '.at', '.behavior', '.bpac', '.bpa', '.bpe', '.bpi', '.dialogue', '.entity', '.geo', '.loot', '.particle', '.render', '.rpac', '.rpa', '.rpe', '.rpi', '.r', '.trade'] // Order is important here.
                 for (let index = 0; index < SubExtensionList.length; index++) {
                 const subExtensionListElement = SubExtensionList[index];
                 if (filePath.includes(`${subExtensionListElement}`)) {
