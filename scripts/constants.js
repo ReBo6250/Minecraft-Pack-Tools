@@ -1,5 +1,5 @@
 const extensionName = "minecraft-pack-tools"
-const extensionVersion = "3.0.4"
+const extensionVersion = "3.0.5"
 const minEngineVersion = [1, 19, 50]
 const commandStartServer = `${extensionName}.startServer`;
 const commandStopServer = `${extensionName}.stopServer`;

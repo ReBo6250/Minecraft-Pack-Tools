@@ -169,7 +169,7 @@ class PackWorkspace {
     let autoRenameBpaAllowed = getConfiguration("auto-rename-bpa"); if (autoRenameBpaAllowed) { this.#renameFilesInFolder(this.bpaFolderPath, '.json', '.bpa'); };
 		let autoRenameDialogueAllowed = getConfiguration("auto-rename-dialogue"); if (autoRenameDialogueAllowed) { this.#renameFilesInFolder(this.bpDialogueFolderPath, '.json', '.dialogue'); }
 		let autoRenameBpeAllowed = getConfiguration("auto-rename-bpe"); if (autoRenameBpeAllowed) { this.#renameFilesInFolder(this.bpeFolderPath, '.json', '.bpe'); }; 
-		let autoRenameFunctionAllowed = getConfiguration("auto-rename-function"); if (autoRenameFunctionAllowed) { this.#renameFilesInFolder(this.bpFunctionFolderPath, '.mcfunction', ''); }
+		let autoRenameFunctionAllowed = getConfiguration("auto-rename-function"); if (autoRenameFunctionAllowed) { this.#renameFilesInFolder(this.bpFunctionFolderPath, '', '.mcfunction', '.json'); }
 		let autoRenameBpiAllowed = getConfiguration("auto-rename-bpi"); if (autoRenameBpiAllowed) { this.#renameFilesInFolder(this.bpiFolderPath, '.json', '.bpi'); };
 		let autoRenameLootAllowed = getConfiguration("auto-rename-loot"); if (autoRenameLootAllowed) { this.#renameFilesInFolder(this.bpLootTableFolderPath, '.json', '.loot'); }
 		let autoRenameRecipeAllowed = getConfiguration("auto-rename-recipe"); if (autoRenameRecipeAllowed) { this.#renameFilesInFolder(this.bpRecipeFolderPath, '.json', '.r'); }
@@ -179,54 +179,62 @@ class PackWorkspace {
 		let autoRenameRpaAllowed = getConfiguration("auto-rename-rpa"); if (autoRenameRpaAllowed) { this.#renameFilesInFolder(this.rpaFolderPath, '.json', '.rpa'); }
 		let autoRenameAtAllowed = getConfiguration("auto-rename-at"); if (autoRenameAtAllowed) { this.#renameFilesInFolder(this.rpAttachableFolderPath, '.json', '.at'); }
 		let autoRenameRpeAllowed = getConfiguration("auto-rename-rpe"); if (autoRenameRpeAllowed) { this.#renameFilesInFolder(this.rpeFolderPath, '.json', '.rpe'); }
-		let autoRenameRenderAllowed = getConfiguration("auto-rename-rpe"); if (autoRenameRenderAllowed) { this.#renameFilesInFolder(this.rpRenderPath, '.json', '.render'); }
+		let autoRenameRenderAllowed = getConfiguration("auto-rename-render"); if (autoRenameRenderAllowed) { this.#renameFilesInFolder(this.rpRenderPath, '.json', '.render'); }
 		let autoRenameRpiAllowed = getConfiguration("auto-rename-rpi"); if (autoRenameRpiAllowed) { this.#renameFilesInFolder(this.rpiFolderPath, '.json', '.rpi'); }
 		let autoRenameGeoAllowed = getConfiguration("auto-rename-geo"); if (autoRenameGeoAllowed) { this.#renameFilesInFolder(this.rpModelFolderPath, '.json', '.geo'); }
 		let autoRenameParticleAllowed = getConfiguration("auto-rename-particle"); if (autoRenameParticleAllowed) { this.#renameFilesInFolder(this.rpParticleFolderPath, '.json', '.particle'); }
 	}
+
+  #checkIfMcFiles(file) {
+    const allowedExtensions = ['.json', '.js', '.material', '.mcfunction'];
+    return allowedExtensions.includes(path.extname(file));
+  }
   
-  #renameFilesInFolder(parentFolderPath, targetExtension, subExtension) {
-      if(!fs.existsSync(parentFolderPath)) {return;}
-      else {
-        getFilesInFolder(parentFolderPath).then((filePaths) => { 
-            filePaths.forEach((filePath) => {
-            let newFilePath;
-        
+  #renameFilesInFolder(parentFolderPath, targetExtension, subExtension, ignoreExtension = '.extensionToIgnore') {
+    if(!fs.existsSync(parentFolderPath)) {return;}
+    else {
+      getFilesInFolder(parentFolderPath).then(async (filePaths) => {
+        for (let index0 = 0; index0 < filePaths.length; index0++) {
+          const filePath = filePaths[index0];
+          let newFilePath;
+          if (path.extname(filePath) === '') {
+            newFilePath = `${filePath}${subExtension}${targetExtension}`
+          }
+          if (filePath.includes(ignoreExtension)) { break; }
+          else if (this.#checkIfMcFiles(filePath)) {
             if (filePath.includes(`${subExtension} copy${targetExtension}`)) {
-                newFilePath = filePath.replace(`${subExtension} copy${targetExtension}`, `${subExtension}${targetExtension}`)
-                let index = 2;
-        
-                while (fs.existsSync(newFilePath)) {
-                newFilePath =  filePath.replace(`${subExtension} copy${targetExtension}`, `${index}${subExtension}${targetExtension}`)
-                index++;
-                if (!fs.existsSync(newFilePath)) { 
+              newFilePath = filePath.replace(`${subExtension} copy${targetExtension}`, `${subExtension}${targetExtension}`)
+              let index1 = 2;
+      
+              while (fs.existsSync(newFilePath)) {
+                newFilePath =  filePath.replace(`${subExtension} copy${targetExtension}`, `${index1}${subExtension}${targetExtension}`)
+                index1++;
+                if (fs.existsSync(filePath) && !fs.existsSync(newFilePath)) {
                     fs.rename(filePath, newFilePath, (error) => { if (error) console.log(error)});
                     break; 
                 }
-                }
+              }
             }
-            if (!filePath.includes(`.`) || (!filePath.includes(`${subExtension}${targetExtension}`) && !filePath.includes(`${subExtension} copy`))) {
-                const SubExtensionList = ['.ac','.animation_controllers', '.animation_controller', '.animation', '.anim', '.at', '.behavior', '.bpac', '.bpa', '.bpe', '.bpi', '.dialogue', '.entity', '.geo', '.loot', '.particle', '.render', '.rpac', '.rpa', '.rpe', '.rpi', '.r', '.trade'] // Order is important here.
-                for (let index = 0; index < SubExtensionList.length; index++) {
-                const subExtensionListElement = SubExtensionList[index];
+            if ((!filePath.includes(`${subExtension}${targetExtension}`) && !filePath.includes(`${subExtension} copy`))) {
+              const SubExtensionList = ['.ac','.animation_controllers', '.animation_controller', '.animation', '.anim', '.at', '.behavior', '.bpac', '.bpa', '.bpe', '.bpi', '.dialogue', '.entity', '.geo', '.loot', '.particle', '.render', '.rpac', '.rpa', '.rpe', '.rpi', '.r', '.trade'] // Order is important here.
+              for (let index2 = 0; index2 < SubExtensionList.length; index2++) {
+                const subExtensionListElement = SubExtensionList[index2];
                 if (filePath.includes(`${subExtensionListElement}`)) {
-                    newFilePath = filePath.replace(`${subExtensionListElement}${targetExtension}`, `${subExtension}${targetExtension}`);
-                    break;
+                  newFilePath = filePath.replace(`${subExtensionListElement}${targetExtension}`, `${subExtension}${targetExtension}`);
+                  break;
                 }
                 else if(subExtensionListElement === SubExtensionList[SubExtensionList.length - 1]){
-                    if (!filePath.includes(`.`)) {
-                    newFilePath = filePath.replace(`${filePath}`, `${filePath}${subExtension}${targetExtension}`);
-                    }
-                    else {
-                    newFilePath = filePath.replace(`${targetExtension}`, `${subExtension}${targetExtension}`);
-                    }
+                  newFilePath = filePath.replace(`${targetExtension}`, `${subExtension}${targetExtension}`);
                 }
-                }
-                fs.rename(filePath, newFilePath, (error) => { if (error) console.log(error)});
+              }
             }
-            })
-        })
+          }
+          if (fs.existsSync(filePath) && !fs.existsSync(newFilePath)) {
+            fs.rename(filePath, newFilePath, (error) => { if (error) console.log(error)});
+          }
         }
+      })
+    }
   }
 
     
