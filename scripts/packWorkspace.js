@@ -192,49 +192,48 @@ class PackWorkspace {
   
   #renameFilesInFolder(parentFolderPath, targetExtension, subExtension, ignoreExtension = '.extensionToIgnore') {
     if(!fs.existsSync(parentFolderPath)) {return;}
-    else {
-      getFilesInFolder(parentFolderPath).then(async (filePaths) => {
-        for (let index0 = 0; index0 < filePaths.length; index0++) {
-          const filePath = filePaths[index0];
-          let newFilePath;
-          if (path.extname(filePath) === '') {
-            newFilePath = `${filePath}${subExtension}${targetExtension}`
-          }
-          if (filePath.includes(ignoreExtension)) { break; }
-          else if (this.#checkIfMcFiles(filePath)) {
-            if (filePath.includes(`${subExtension} copy${targetExtension}`)) {
-              newFilePath = filePath.replace(`${subExtension} copy${targetExtension}`, `${subExtension}${targetExtension}`)
-              let index1 = 2;
-      
-              while (fs.existsSync(newFilePath)) {
-                newFilePath =  filePath.replace(`${subExtension} copy${targetExtension}`, `${index1}${subExtension}${targetExtension}`)
-                index1++;
-                if (fs.existsSync(filePath) && !fs.existsSync(newFilePath)) {
-                    fs.rename(filePath, newFilePath, (error) => { if (error) console.log(error)});
-                    break; 
-                }
-              }
-            }
-            if ((!filePath.includes(`${subExtension}${targetExtension}`) && !filePath.includes(`${subExtension} copy`))) {
-              const SubExtensionList = ['.ac','.animation_controllers', '.animation_controller', '.animation', '.anim', '.at', '.behavior', '.bpac', '.bpa', '.bpe', '.bpi', '.dialogue', '.entity', '.geo', '.loot', '.particle', '.render', '.rpac', '.rpa', '.rpe', '.rpi', '.r', '.trade'] // Order is important here.
-              for (let index2 = 0; index2 < SubExtensionList.length; index2++) {
-                const subExtensionListElement = SubExtensionList[index2];
-                if (filePath.includes(`${subExtensionListElement}`)) {
-                  newFilePath = filePath.replace(`${subExtensionListElement}${targetExtension}`, `${subExtension}${targetExtension}`);
-                  break;
-                }
-                else if(subExtensionListElement === SubExtensionList[SubExtensionList.length - 1]){
-                  newFilePath = filePath.replace(`${targetExtension}`, `${subExtension}${targetExtension}`);
-                }
+
+    getFilesInFolder(parentFolderPath).then(async (filePaths) => {
+      for (let index0 = 0; index0 < filePaths.length; index0++) {
+        const filePath = filePaths[index0];
+        let newFilePath;
+
+        if (!(path.basename(filePath).startsWith('.')) && (path.extname(filePath) === '') ) { newFilePath = `${filePath}${subExtension}${targetExtension}` }
+
+        if (filePath.includes(ignoreExtension)) { break; }
+        else if (this.#checkIfMcFiles(filePath)) {
+          if (filePath.includes(`${subExtension} copy${targetExtension}`)) {
+            newFilePath = filePath.replace(`${subExtension} copy${targetExtension}`, `${subExtension}${targetExtension}`)
+            let index1 = 2;
+    
+            while (fs.existsSync(newFilePath)) {
+              newFilePath =  filePath.replace(`${subExtension} copy${targetExtension}`, `${index1}${subExtension}${targetExtension}`)
+              index1++;
+              if (fs.existsSync(filePath) && !fs.existsSync(newFilePath)) {
+                  fs.rename(filePath, newFilePath, (error) => { if (error) console.log(error)});
+                  break; 
               }
             }
           }
-          if (fs.existsSync(filePath) && !fs.existsSync(newFilePath)) {
-            fs.rename(filePath, newFilePath, (error) => { if (error) console.log(error)});
+          if ((!filePath.includes(`${subExtension}${targetExtension}`) && !filePath.includes(`${subExtension} copy`))) {
+            const SubExtensionList = ['.ac','.animation_controllers', '.animation_controller', '.animation', '.anim', '.at', '.behavior', '.bpac', '.bpa', '.bpe', '.bpi', '.dialogue', '.entity', '.geo', '.loot', '.particle', '.render', '.rpac', '.rpa', '.rpe', '.rpi', '.r', '.trade'] // Order is important here.
+            for (let index2 = 0; index2 < SubExtensionList.length; index2++) {
+              const subExtensionListElement = SubExtensionList[index2];
+              if (filePath.includes(`${subExtensionListElement}`)) {
+                newFilePath = filePath.replace(`${subExtensionListElement}${targetExtension}`, `${subExtension}${targetExtension}`);
+                break;
+              }
+              else if(subExtensionListElement === SubExtensionList[SubExtensionList.length - 1]){
+                newFilePath = filePath.replace(`${targetExtension}`, `${subExtension}${targetExtension}`);
+              }
+            }
           }
         }
-      })
-    }
+        if (fs.existsSync(filePath) && !fs.existsSync(newFilePath)) {
+          fs.rename(filePath, newFilePath, (error) => { if (error) console.log(error)});
+        }
+      }
+    })
   }
 
     
