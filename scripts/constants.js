@@ -1,5 +1,5 @@
 const extensionName = "minecraft-pack-tools"
-const extensionVersion = "3.0.5"
+const extensionVersion = "3.1.0"
 const minEngineVersion = [1, 19, 50]
 const commandStartServer = `${extensionName}.startServer`;
 const commandStopServer = `${extensionName}.stopServer`;
@@ -7,17 +7,18 @@ const commandCreateBpManifest = `${extensionName}.bpManifest`;
 const commandCreateRpManifest = `${extensionName}.rpManifest`;
 const commandCreateBpRpManifest = `${extensionName}.bpRpManifest`;
 const commandCreateScriptAPIManifest = `${extensionName}.scriptAPIManifest`;
-
+const ignoredFileNames = ['.gitignore', '.gitkeep'];
 
 
 module.exports = {
-  extensionName,
   commandCreateBpManifest,
-  commandCreateRpManifest,
   commandCreateBpRpManifest,
+  commandCreateRpManifest,
   commandCreateScriptAPIManifest,
-  extensionVersion,
-  minEngineVersion,
   commandStartServer,
-  commandStopServer
+  commandStopServer,
+  extensionName,
+  extensionVersion,
+  ignoredFileNames,
+  minEngineVersion
 }

@@ -1,7 +1,8 @@
 const vscode = require('vscode');
 const path = require('path');
-const {jsonReader, jsonConverter, getFilesInFolder, getConfiguration, getFolders} = require('./utils');
+const {jsonReader, jsonConverter, getConfiguration, getFolders} = require('./utils');
 const manifestContent = require('./manifestContent');
+const {ignoredFileNames} = require('./constants')
 var fs = require('fs');
 
 class PackWorkspace {
@@ -165,75 +166,65 @@ class PackWorkspace {
   }
   
 	renameFiles() {
-		let autoRenameBpacAllowed = getConfiguration("auto-rename-bpac"); if (autoRenameBpacAllowed) { this.#renameFilesInFolder(this.bpacFolderPath, '.json', '.bpac'); };
-    let autoRenameBpaAllowed = getConfiguration("auto-rename-bpa"); if (autoRenameBpaAllowed) { this.#renameFilesInFolder(this.bpaFolderPath, '.json', '.bpa'); };
-		let autoRenameDialogueAllowed = getConfiguration("auto-rename-dialogue"); if (autoRenameDialogueAllowed) { this.#renameFilesInFolder(this.bpDialogueFolderPath, '.json', '.dialogue'); }
-		let autoRenameBpeAllowed = getConfiguration("auto-rename-bpe"); if (autoRenameBpeAllowed) { this.#renameFilesInFolder(this.bpeFolderPath, '.json', '.bpe'); }; 
-		let autoRenameFunctionAllowed = getConfiguration("auto-rename-function"); if (autoRenameFunctionAllowed) { this.#renameFilesInFolder(this.bpFunctionFolderPath, '', '.mcfunction', '.json'); }
-		let autoRenameBpiAllowed = getConfiguration("auto-rename-bpi"); if (autoRenameBpiAllowed) { this.#renameFilesInFolder(this.bpiFolderPath, '.json', '.bpi'); };
-		let autoRenameLootAllowed = getConfiguration("auto-rename-loot"); if (autoRenameLootAllowed) { this.#renameFilesInFolder(this.bpLootTableFolderPath, '.json', '.loot'); }
-		let autoRenameRecipeAllowed = getConfiguration("auto-rename-recipe"); if (autoRenameRecipeAllowed) { this.#renameFilesInFolder(this.bpRecipeFolderPath, '.json', '.r'); }
-		let autoRenameTradeAllowed = getConfiguration("auto-rename-trade"); if (autoRenameTradeAllowed) { this.#renameFilesInFolder(this.bpTradingFolderPath, '.json', '.trade'); }
+		let autoRenameFunctionAllowed = getConfiguration("auto-rename-function"); if (autoRenameFunctionAllowed) { this.#addExtensionToFunctionFiles(this.bpFunctionFolderPath, '.mcfunction'); }
 
-    let autoRenameRpacAllowed = getConfiguration("auto-rename-rpac"); if (autoRenameRpacAllowed) { this.#renameFilesInFolder(this.rpacFolderPath, '.json', '.rpac'); }
-		let autoRenameRpaAllowed = getConfiguration("auto-rename-rpa"); if (autoRenameRpaAllowed) { this.#renameFilesInFolder(this.rpaFolderPath, '.json', '.rpa'); }
-		let autoRenameAtAllowed = getConfiguration("auto-rename-at"); if (autoRenameAtAllowed) { this.#renameFilesInFolder(this.rpAttachableFolderPath, '.json', '.at'); }
-		let autoRenameRpeAllowed = getConfiguration("auto-rename-rpe"); if (autoRenameRpeAllowed) { this.#renameFilesInFolder(this.rpeFolderPath, '.json', '.rpe'); }
-		let autoRenameRenderAllowed = getConfiguration("auto-rename-render"); if (autoRenameRenderAllowed) { this.#renameFilesInFolder(this.rpRenderPath, '.json', '.render'); }
-		let autoRenameRpiAllowed = getConfiguration("auto-rename-rpi"); if (autoRenameRpiAllowed) { this.#renameFilesInFolder(this.rpiFolderPath, '.json', '.rpi'); }
-		let autoRenameGeoAllowed = getConfiguration("auto-rename-geo"); if (autoRenameGeoAllowed) { this.#renameFilesInFolder(this.rpModelFolderPath, '.json', '.geo'); }
-		let autoRenameParticleAllowed = getConfiguration("auto-rename-particle"); if (autoRenameParticleAllowed) { this.#renameFilesInFolder(this.rpParticleFolderPath, '.json', '.particle'); }
+		let autoRenameBpacAllowed = getConfiguration("auto-rename-bpac"); if (autoRenameBpacAllowed) { this.#addSuffixToFiles(this.bpacFolderPath, '.bpac'); };
+    let autoRenameBpaAllowed = getConfiguration("auto-rename-bpa"); if (autoRenameBpaAllowed) { this.#addSuffixToFiles(this.bpaFolderPath, '.bpa'); };
+		let autoRenameDialogueAllowed = getConfiguration("auto-rename-dialogue"); if (autoRenameDialogueAllowed) { this.#addSuffixToFiles(this.bpDialogueFolderPath, '.dialogue'); }
+		let autoRenameBpeAllowed = getConfiguration("auto-rename-bpe"); if (autoRenameBpeAllowed) { this.#addSuffixToFiles(this.bpeFolderPath, '.bpe'); }; 
+		let autoRenameBpiAllowed = getConfiguration("auto-rename-bpi"); if (autoRenameBpiAllowed) { this.#addSuffixToFiles(this.bpiFolderPath, '.bpi'); };
+		let autoRenameLootAllowed = getConfiguration("auto-rename-loot"); if (autoRenameLootAllowed) { this.#addSuffixToFiles(this.bpLootTableFolderPath, '.loot'); }
+		let autoRenameRecipeAllowed = getConfiguration("auto-rename-recipe"); if (autoRenameRecipeAllowed) { this.#addSuffixToFiles(this.bpRecipeFolderPath, '.r'); }
+		let autoRenameTradeAllowed = getConfiguration("auto-rename-trade"); if (autoRenameTradeAllowed) { this.#addSuffixToFiles(this.bpTradingFolderPath, '.trade'); }
+
+    let autoRenameRpacAllowed = getConfiguration("auto-rename-rpac"); if (autoRenameRpacAllowed) { this.#addSuffixToFiles(this.rpacFolderPath, '.rpac'); }
+		let autoRenameRpaAllowed = getConfiguration("auto-rename-rpa"); if (autoRenameRpaAllowed) { this.#addSuffixToFiles(this.rpaFolderPath, '.rpa'); }
+		let autoRenameAtAllowed = getConfiguration("auto-rename-at"); if (autoRenameAtAllowed) { this.#addSuffixToFiles(this.rpAttachableFolderPath, '.at'); }
+		let autoRenameRpeAllowed = getConfiguration("auto-rename-rpe"); if (autoRenameRpeAllowed) { this.#addSuffixToFiles(this.rpeFolderPath, '.rpe'); }
+		let autoRenameRenderAllowed = getConfiguration("auto-rename-render"); if (autoRenameRenderAllowed) { this.#addSuffixToFiles(this.rpRenderPath, '.render'); }
+		let autoRenameRpiAllowed = getConfiguration("auto-rename-rpi"); if (autoRenameRpiAllowed) { this.#addSuffixToFiles(this.rpiFolderPath, '.rpi'); }
+		let autoRenameGeoAllowed = getConfiguration("auto-rename-geo"); if (autoRenameGeoAllowed) { this.#addSuffixToFiles(this.rpModelFolderPath, '.geo'); }
+		let autoRenameParticleAllowed = getConfiguration("auto-rename-particle"); if (autoRenameParticleAllowed) { this.#addSuffixToFiles(this.rpParticleFolderPath, '.particle'); }
 	}
 
-  #checkIfMcFiles(file) {
-    const allowedExtensions = ['.json', '.js', '.material', '.mcfunction'];
-    return allowedExtensions.includes(path.extname(file));
-  }
+  #addSuffixToFiles(folderPath, suffix) {
+    const files = fs.readdirSync(folderPath);
+
+    files.forEach((file) => {
+      const filePath = path.join(folderPath, file);
+      const fileExtension = path.extname(file);
+      const baseName = path.basename(file, fileExtension);
+      const suffixRegex = /\.[^.]+$/i;
   
-  #renameFilesInFolder(parentFolderPath, targetExtension, subExtension, ignoreExtension = '.extensionToIgnore') {
-    if(!fs.existsSync(parentFolderPath)) {return;}
-
-    getFilesInFolder(parentFolderPath).then(async (filePaths) => {
-      for (let index0 = 0; index0 < filePaths.length; index0++) {
-        const filePath = filePaths[index0];
-        let newFilePath;
-
-        if (!(path.basename(filePath).startsWith('.')) && (path.extname(filePath) === '') ) { newFilePath = `${filePath}${subExtension}${targetExtension}` }
-
-        if (filePath.includes(ignoreExtension)) { break; }
-        else if (this.#checkIfMcFiles(filePath)) {
-          if (filePath.includes(`${subExtension} copy${targetExtension}`)) {
-            newFilePath = filePath.replace(`${subExtension} copy${targetExtension}`, `${subExtension}${targetExtension}`)
-            let index1 = 2;
-    
-            while (fs.existsSync(newFilePath)) {
-              newFilePath =  filePath.replace(`${subExtension} copy${targetExtension}`, `${index1}${subExtension}${targetExtension}`)
-              index1++;
-              if (fs.existsSync(filePath) && !fs.existsSync(newFilePath)) {
-                  fs.rename(filePath, newFilePath, (error) => { if (error) console.log(error)});
-                  break; 
-              }
-            }
-          }
-          if ((!filePath.includes(`${subExtension}${targetExtension}`) && !filePath.includes(`${subExtension} copy`))) {
-            const SubExtensionList = ['.ac','.animation_controllers', '.animation_controller', '.animation', '.anim', '.at', '.behavior', '.bpac', '.bpa', '.bpe', '.bpi', '.dialogue', '.entity', '.geo', '.loot', '.particle', '.render', '.rpac', '.rpa', '.rpe', '.rpi', '.r', '.trade'] // Order is important here.
-            for (let index2 = 0; index2 < SubExtensionList.length; index2++) {
-              const subExtensionListElement = SubExtensionList[index2];
-              if (filePath.includes(`${subExtensionListElement}`)) {
-                newFilePath = filePath.replace(`${subExtensionListElement}${targetExtension}`, `${subExtension}${targetExtension}`);
-                break;
-              }
-              else if(subExtensionListElement === SubExtensionList[SubExtensionList.length - 1]){
-                newFilePath = filePath.replace(`${targetExtension}`, `${subExtension}${targetExtension}`);
-              }
-            }
-          }
+      if (fs.statSync(filePath).isFile() && !ignoredFileNames.includes(file) && !baseName.includes(' copy')) {
+        const newFileName = baseName.replace(suffixRegex, '') + suffix + '.json';
+  
+        if (fileExtension === '' && !baseName.startsWith('.')) {
+          const newPath = path.join(folderPath, newFileName);
+          fs.renameSync(filePath, newPath);
         }
-        if (fs.existsSync(filePath) && !fs.existsSync(newFilePath)) {
-          fs.rename(filePath, newFilePath, (error) => { if (error) console.log(error)});
-        }
+      } else if (fs.statSync(filePath).isDirectory()) {
+        this.#addSuffixToFiles(filePath, suffix); // Recursive call for subfolders
       }
-    })
+    });
+    // Refresh the workspace to reflect the changes
+    vscode.commands.executeCommand('workbench.files.action.refreshFilesExplorer');
+  }
+
+  #addExtensionToFunctionFiles(folderPath, extension) {
+    const files = fs.readdirSync(folderPath);
+  
+    files.forEach((file) => {
+      const filePath = path.join(folderPath, file);
+      const fileExtension = path.extname(file);
+  
+      if (fs.statSync(filePath).isFile() && fileExtension === '') {
+        const newFileName = file + extension;
+        const newPath = path.join(folderPath, newFileName);
+        
+        if (fs.existsSync(filePath) && !fs.existsSync(newPath)) { fs.renameSync(filePath, newPath); }
+      }
+    });
   }
 
     

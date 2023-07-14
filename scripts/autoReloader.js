@@ -47,12 +47,7 @@ module.exports = class AutoReloader {
     }
 
     startWatchFiles() {
-        const watcher = vscode.workspace.createFileSystemWatcher(
-            "**/{scripts,functions}/**/*.{js,json,mcfunction}",
-            false,
-            false,
-            false
-        );
+        const watcher = vscode.workspace.createFileSystemWatcher( "**/{scripts,functions}/**/*.{js,json,mcfunction}", false, false, false );
         watcher.onDidChange(async (uri) => {
             setTimeout(() => { this.reloadSilent(uri); }, 200);
             setTimeout(() => { this.reloadSilent(uri); }, 500);
