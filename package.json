@@ -146,10 +146,6 @@
       {
         "command": "minecraft-pack-tools.stopServer",
         "title": "MPT: Stop Server"
-      },
-      {
-        "command": "minecraft-pack-tools.mcfunction",
-        "title": "MPT: Generate Mcfunction in highlighted text"
       }
     ]
   },

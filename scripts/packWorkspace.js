@@ -1,10 +1,9 @@
 const vscode = require('vscode');
 const path = require('path');
-const {jsonReader, jsonConverter, getConfiguration, getFolders, createDirectories} = require('./utils');
+const {jsonReader, jsonConverter, getConfiguration, getFolders} = require('./utils');
 const manifestContent = require('./manifestContent');
 const {ignoredFileNames} = require('./constants')
-const fs = require('fs');
-
+var fs = require('fs');
 
 class PackWorkspace {
   constructor() {
@@ -227,9 +226,9 @@ class PackWorkspace {
       }
     });
   }
- 
+
     
-  generateBpManifest() {
+  createBpManifest() {
     if (!this.hasBpManifest) {
       try { fs.writeFileSync(this.bpManifestPath, jsonConverter(manifestContent.Bp)); } 
       catch (error) { console.log(error); }
@@ -237,7 +236,7 @@ class PackWorkspace {
     else { vscode.window.showErrorMessage(`File: ${this.bpManifestPath} already exists.`); }
   }
 
-  generateRpManifest() {
+  createRpManifest() {
     if (!this.hasRpManifest) {
       try { fs.writeFileSync(this.rpManifestPath, jsonConverter(manifestContent.Rp)); } 
       catch (error) { console.log(error); }
@@ -245,7 +244,7 @@ class PackWorkspace {
     else { vscode.window.showErrorMessage(`File: ${this.rpManifestPath} already exists.`); }
     
   }
-  generateBpRpManifest() {
+  createBpRpManifest() {
     if (!this.hasBpManifest && !this.hasRpManifest) {
       try { fs.writeFileSync(this.bpManifestPath, jsonConverter(manifestContent.Bp)); } 
       catch (error) { console.log(error); }
@@ -257,56 +256,13 @@ class PackWorkspace {
       if (this.hasRpManifest) { vscode.window.showErrorMessage(`File: ${this.rpManifestPath} already exists.`); }
     }
   }
-  generateScriptAPIManifest() {
+  createScriptAPIManifest() {
     if (!this.hasBpManifest) {
       try { fs.writeFileSync(this.bpManifestPath, jsonConverter(manifestContent.ScriptAPI)); } 
       catch (error) { console.log(error); }
     } 
     else { vscode.window.showErrorMessage(`File: ${this.bpManifestPath} already exists.`); }
   }
-
-  createMcfunctionFromHighlightedText() {
-    const editor = vscode.window.activeTextEditor;
-  
-    if (editor) {
-      const selection = editor.selection;
-      const highlightedText = editor.document.getText(selection);
-  
-      if (highlightedText) {
-        const fileName = highlightedText + '.mcfunction';
-  
-          const filePath = path.join(this.bpFunctionFolderPath, fileName);
-          if (fs.existsSync(filePath)) {
-            vscode.window.showErrorMessage('Mcfunction already exist.');
-            return;
-          }
-  
-          const fileContent = 'testfor @s';
-  
-          createDirectories(path.dirname(filePath))
-            .then(() => {
-              fs.writeFile(filePath, fileContent, (err) => {
-                if (err) {
-                  vscode.window.showErrorMessage('Failed to create file: ' + err.message);
-                } else {
-                  vscode.window.showInformationMessage('File created successfully!');
-                }
-              });
-            })
-            .catch((err) => {
-              vscode.window.showErrorMessage('Failed to create directories: ' + err.message);
-            });
-      } 
-      else {
-        vscode.window.showErrorMessage('No text is currently highlighted.');
-      }
-    } 
-    else {
-      vscode.window.showErrorMessage('No active text editor found.');
-    }
-  }
-  
-  
 }
 
 module.exports = {

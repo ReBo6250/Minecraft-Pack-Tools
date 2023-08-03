@@ -41,17 +41,7 @@ function jsonConverter(object, indent = 2) {
     }
 }
 
-function createDirectories(directoryPath) {
-  return new Promise((resolve, reject) => {
-    fs.mkdir(directoryPath, { recursive: true }, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
-}
+
 
 async function getFilesInFolder(parentFolderPath) {
     let filePaths = [];
@@ -81,7 +71,6 @@ module.exports = {
     getConfiguration,
     getFilesInFolder,
     getFolders,
-    createDirectories,
     jsonConverter,
     jsonReader
   }
