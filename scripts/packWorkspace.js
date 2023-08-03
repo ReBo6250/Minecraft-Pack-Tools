@@ -2,7 +2,6 @@ const vscode = require('vscode');
 const path = require('path');
 const {jsonReader, jsonConverter, getConfiguration, getFolders} = require('./utils');
 const manifestContent = require('./manifestContent');
-const {ignoredFileNames, suffixList} = require('./constants')
 const fs = require('fs');
 
 
