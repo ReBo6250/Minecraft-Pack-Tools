@@ -140,6 +140,10 @@
         "title": "MPT: Generate Script API Manifest"
       },
       {
+        "command": "minecraft-pack-tools.mcfunction",
+        "title": "MPT: Generate Mcfunction in highlighted text"
+      },
+      {
         "command": "minecraft-pack-tools.startServer",
         "title": "MPT: Start Server"
       },

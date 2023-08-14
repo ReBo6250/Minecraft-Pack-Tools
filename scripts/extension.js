@@ -1,7 +1,7 @@
 const vscode = require('vscode');
 const  { PackWorkspace } = require('./packWorkspace');
 
-const { commandStartServer, commandStopServer, commandCreateBpManifest, commandCreateRpManifest, commandCreateBpRpManifest, commandCreateScriptAPIManifest } = require("./constants");
+const { commandStartServer, commandStopServer, commandCreateBpManifest, commandCreateRpManifest, commandCreateBpRpManifest, commandCreateScriptAPIManifest, commandCreateMcfunction } = require("./constants");
 
 var AutoReloader = require("./autoReloader");
 
@@ -20,6 +20,7 @@ async function activate(context) {
 	let rpManifestDisposable = vscode.commands.registerCommand(commandCreateRpManifest, () => { packWorkspace.createRpManifest(); });
 	let bpRpManifestDisposable = vscode.commands.registerCommand(commandCreateBpRpManifest, () => { packWorkspace.createBpRpManifest(); });
 	let scriptAPIManifestDisposable = vscode.commands.registerCommand(commandCreateScriptAPIManifest, () => { packWorkspace.createScriptAPIManifest(); });
+	let mcfunctionDisposable = vscode.commands.registerCommand(commandCreateMcfunction, () => { packWorkspace.createMcfunctionFromHighlightedText(); });
 
 	let onDidChangeWorkspaceFoldersDisposable = vscode.workspace.onDidChangeWorkspaceFolders(
 		() => { 
@@ -57,7 +58,18 @@ async function activate(context) {
     const commandStopServerDisposable = vscode.commands.registerCommand(commandStopServer, () => autoReloader.stop() );
 	
     context.subscriptions.concat(autoReloader, commandStartServerDisposable, commandStopServerDisposable);
-	context.subscriptions.push(bpManifestDisposable, rpManifestDisposable, bpRpManifestDisposable, onDidSaveTextDocumentDisposable, onDidDeleteFilesDisposable, onDidChangeWorkspaceFoldersDisposable, onDidCreateFilesDisposable, onDidRenameFilesDisposable, scriptAPIManifestDisposable);
+	context.subscriptions.push(
+		bpManifestDisposable,
+		rpManifestDisposable,
+		bpRpManifestDisposable,
+		onDidSaveTextDocumentDisposable, 
+		onDidDeleteFilesDisposable, 
+		onDidChangeWorkspaceFoldersDisposable, 
+		onDidCreateFilesDisposable, 
+		onDidRenameFilesDisposable,
+		scriptAPIManifestDisposable,
+		mcfunctionDisposable
+	);
 }
 
 function deactivate() {}
