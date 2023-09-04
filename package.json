@@ -124,6 +124,10 @@
     },
     "commands": [
       {
+        "command": "minecraft-pack-tools.listSoundFiles",
+        "title": "MPT: List all files in the RP sounds folder"
+      },
+      {
         "command": "minecraft-pack-tools.bpManifest",
         "title": "MPT: Generate Behavior Pack Manifest"
       },
@@ -172,6 +176,7 @@
   },
   "dependencies": {
     "uuid": "^9.0.0",
+    "vscode": "^1.1.37",
     "ws": "^8.13.0"
   }
 }

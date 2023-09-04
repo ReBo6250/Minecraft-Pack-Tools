@@ -1,6 +1,6 @@
 const vscode = require('vscode');
 const path = require('path');
-const {jsonReader, jsonConverter, getConfiguration, getFolders, createDirectories} = require('./utils');
+const {jsonReader, jsonConverter, getConfiguration, getFolders, getFilesInFolder, createDirectories} = require('./utils');
 const manifestContent = require('./manifestContent');
 const fs = require('fs');
 
@@ -98,7 +98,7 @@ class PackWorkspace {
     
                 let module;
                 try { module = JSON.parse(modules); } 
-                catch (error) { vscode.showErrorMessage('Error:', error); }
+                catch (error) { vscode.window.showErrorMessage('Error:', error); }
     
                 const packFolderPath = manifestPath.replace('manifest.json', '');
                 if (module.type.toString() === 'data') {
@@ -120,7 +120,7 @@ class PackWorkspace {
                 }
 
               })
-              .catch((error) => { vscode.showErrorMessage('Error:', error); });
+              .catch((error) => { vscode.window.showErrorMessage('Error:', error); });
           });
         }
         else {
@@ -162,6 +162,7 @@ class PackWorkspace {
       this.rpRenderPath = path.join(folder, 'render_controllers');
       this.rpManifestPath = path.join(folder, 'manifest.json');
       this.rpParticleFolderPath = path.join(folder, 'particles');
+      this.rpSoundFolderPath = path.join(folder, 'sounds');
       this.rpUiFolderPath = path.join(folder, 'ui');
   }
   
@@ -334,6 +335,22 @@ class PackWorkspace {
       vscode.window.showErrorMessage('No active text editor found.');
     }
   }
+  
+
+ async listFilesInDirectory() {
+   const filePaths = await getFilesInFolder(this.rpSoundFolderPath);
+
+   let outputFile = `${this.rpSoundFolderPath}\\sounds_list.txt`;
+
+   fs.writeFile(outputFile, filePaths.join("\n"), (err) => {
+     if (err) {
+       console.error(`Error writing to file: ${err}`);
+     } else {
+       console.log(`File paths saved to ${outputFile}`);
+     }
+   });
+ }
+
 }
 
 module.exports = {

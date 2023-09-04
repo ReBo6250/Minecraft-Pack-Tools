@@ -1,7 +1,7 @@
 const vscode = require('vscode');
 const  { PackWorkspace } = require('./packWorkspace');
 
-const { commandStartServer, commandStopServer, commandCreateBpManifest, commandCreateRpManifest, commandCreateBpRpManifest, commandCreateScriptAPIManifest, commandCreateMcfunction } = require("./constants");
+const { commandStartServer, commandStopServer, commandCreateBpManifest, commandCreateRpManifest, commandCreateBpRpManifest, commandListSoundFiles, commandCreateScriptAPIManifest, commandCreateMcfunction } = require("./constants");
 
 var AutoReloader = require("./autoReloader");
 
@@ -21,6 +21,7 @@ async function activate(context) {
 	let bpRpManifestDisposable = vscode.commands.registerCommand(commandCreateBpRpManifest, () => { packWorkspace.createBpRpManifest(); });
 	let scriptAPIManifestDisposable = vscode.commands.registerCommand(commandCreateScriptAPIManifest, () => { packWorkspace.createScriptAPIManifest(); });
 	let mcfunctionDisposable = vscode.commands.registerCommand(commandCreateMcfunction, () => { packWorkspace.createMcfunctionFromHighlightedText(); });
+	let listSoundFilesDisposable = vscode.commands.registerCommand(commandListSoundFiles, () => { packWorkspace.listFilesInDirectory(); });
 
 	let onDidChangeWorkspaceFoldersDisposable = vscode.workspace.onDidChangeWorkspaceFolders(
 		() => { 
@@ -61,6 +62,7 @@ async function activate(context) {
 	context.subscriptions.push(
 		bpManifestDisposable,
 		rpManifestDisposable,
+		listSoundFilesDisposable,
 		bpRpManifestDisposable,
 		onDidSaveTextDocumentDisposable, 
 		onDidDeleteFilesDisposable, 
