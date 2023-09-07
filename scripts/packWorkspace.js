@@ -278,9 +278,9 @@ class PackWorkspace {
   }
   createBpRpManifest() {
     if (!this.hasBpManifest && !this.hasRpManifest) {
-      try { fs.writeFileSync(this.bpManifestPath, jsonConverter(manifestContent.Bp)); } 
+      try { fs.writeFileSync(this.bpManifestPath, jsonConverter(manifestContent.BpWithDependencies)); } 
       catch (error) { console.log(error); }
-      try { fs.writeFileSync(this.rpManifestPath, jsonConverter(manifestContent.Rp)); } 
+      try { fs.writeFileSync(this.rpManifestPath, jsonConverter(manifestContent.RpWithDependencies)); } 
       catch (error) { console.log(error); }
     } 
     else {
