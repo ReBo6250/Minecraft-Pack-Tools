@@ -101,7 +101,7 @@ class PackWorkspace {
                 catch (error) { vscode.window.showErrorMessage('Error:', error); }
     
                 const packFolderPath = manifestPath.replace('manifest.json', '');
-                if (module.type.toString() === 'data') {
+                if (module.type.toString() === 'data' || module.type.toString() === 'script') {
                   this.bpManifestCount++;
                   this.hasBpManifest = true;
                   this.#getBpPackInfo(packFolderPath);
