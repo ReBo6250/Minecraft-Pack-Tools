@@ -1,8 +1,10 @@
 const vscode = require("vscode");
 const fs = require("fs");
 const path = require("path");
+const AddonFilesRenamer = require("./AddonFilesRenamer");
+const AutoReloader = require("./AutoReloader");
 
-module.exports = class MptWorkspace {
+module.exports = class MPT {
   constructor() {
     this.#initialize();
   }
@@ -14,29 +16,6 @@ module.exports = class MptWorkspace {
   #hasBpManifest = false;
   #hasRpManifest = false;
 
-  #bpAnimationControllerPath;
-  #bpAnimationPath;
-  #bpDialoguePath;
-  #bpEntityPath;
-  #bpFunctionPath;
-  #bpItemPath;
-  #bpLootPath;
-  #bpRecipePath;
-  #bpSciptsPath;
-  #bpSpawnRulePath;
-  #bpTradingFolderPath;
-
-  #rpAnimationControllerPath;
-  #rpAnimationPath;
-  #rpAttachablePath;
-  #rpEntityPath;
-  #rpModelPath;
-  #rpItemPath;
-  #rpRenderPath;
-  #rpParticlePath;
-  #rpSoundPath;
-  #rpUiPath;
-
   #initialize() {
     if (vscode.workspace.workspaceFolders) {
       vscode.workspace.workspaceFolders.forEach((folder) => {
@@ -44,8 +23,10 @@ module.exports = class MptWorkspace {
         this.#getAllManifestPaths(folderPath);
       });
       if (this.bpFolderPaths.length > 0 || this.rpFolderPaths.length > 0) {
-        this.#startWatchFiles();
+        new AddonFilesRenamer(this.bpFolderPaths[0], this.rpFolderPaths[0]);
+        new AutoReloader();
       }
+      console.log("MPT is now active");
     }
   }
 
@@ -106,7 +87,7 @@ module.exports = class MptWorkspace {
         );
       }
 
-      function  checkFolderNames(currentPath, pattern, targetArray) {
+      function checkFolderNames(currentPath, pattern, targetArray) {
         const folders = fs.readdirSync(currentPath);
         folders.forEach((folder) => {
           const folderPath = path.join(currentPath, folder);
@@ -120,45 +101,4 @@ module.exports = class MptWorkspace {
 
     traverseDirectory(rootPath);
   }
-  #startWatchFiles() {
-    const renameWatcher = vscode.workspace.createFileSystemWatcher( `{${this.bpFolderPaths[0]},${this.rpFolderPaths[0]}}/**/*.json`, true, false, false );
-    renameWatcher.onDidChange(async (uri) => {
-      if (uri.fsPath.includes(`${this.bpFolderPaths[0]}`)) { 
-        if (uri.fsPath.includes(`\\animation_controllers`)); { addSuffixToFile(uri.fsPath, 'bpac')}
-        if (uri.fsPath.includes(`\\animations`)); { addSuffixToFile(uri.fsPath, 'bpa')}
-        if (uri.fsPath.includes(`\\dialogue`)); { addSuffixToFile(uri.fsPath, 'dialogue')}
-        if (uri.fsPath.includes(`\\entities`)) { addSuffixToFile(uri.fsPath, 'bpe') }
-        if (uri.fsPath.includes(`\\items`)) { addSuffixToFile(uri.fsPath, 'bpi') }
-        if (uri.fsPath.includes(`\\loot_tables`)); { addSuffixToFile(uri.fsPath, 'loot')}
-        if (uri.fsPath.includes(`\\recipes`)); { addSuffixToFile(uri.fsPath, 'r')}
-        if (uri.fsPath.includes(`\\spawn_rules`)); { addSuffixToFile(uri.fsPath, 'spawn')}
-        if (uri.fsPath.includes(`\\trading`)); { addSuffixToFile(uri.fsPath, 'trade')}
-       }
-      if (uri.fsPath.includes(`${this.rpFolderPaths[0]}`)) { 
-        if (uri.fsPath.includes(`\\animation_controllers`)); { addSuffixToFile(uri.fsPath, 'rpac')}
-        if (uri.fsPath.includes(`\\animations`)); { addSuffixToFile(uri.fsPath, 'rpa')}
-        if (uri.fsPath.includes(`\\attachables`)) { addSuffixToFile(uri.fsPath, 'at') }
-        if (uri.fsPath.includes(`\\entity`)) { addSuffixToFile(uri.fsPath, 'rpe') }
-        if (uri.fsPath.includes(`\\items`)) { addSuffixToFile(uri.fsPath, 'rpi') }
-        if (uri.fsPath.includes(`\\models`)) { addSuffixToFile(uri.fsPath, 'geo') }
-        if (uri.fsPath.includes(`\\particles`)) { addSuffixToFile(uri.fsPath, 'particle') }
-        if (uri.fsPath.includes(`\\render_controllers`)) { addSuffixToFile(uri.fsPath, 'render') }
-       }
-    });
-
-    function addSuffixToFile(filePath, suffix) {
-      const fileExtension = path.extname(filePath);
-      if (filePath.includes(` copy`) || filePath.includes(`.${suffix}`)) {
-        return;
-      }
-      const newFilePath = `${filePath.replace(`${fileExtension}`,'')}.${suffix}${fileExtension}`;
-      try {
-        fs.renameSync(filePath, newFilePath);
-      } catch (error) {
-        console.error(`Error renaming ${filePath}:`, error);
-        return;
-      }
-    };
-  }
 };
-

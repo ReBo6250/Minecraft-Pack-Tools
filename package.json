@@ -1,8 +1,8 @@
 {
   "name": "minecraft-pack-tools",
   "displayName": "Minecraft Pack Tools",
-  "description": "An extension more convenient Minecraft addon development.",
-  "version": "0.0.1",
+  "description": "Acode --install-extension my-extension-0.0.1.vsixn extension more convenient Minecraft addon development.",
+  "version": "4.0.2",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -34,91 +34,6 @@
           "description": "Websocket server port.",
           "type": "integer",
           "default": 9999
-        },
-        "minecraft-pack-tools.auto-rename-bpa": {
-          "description": "Auto Rename BP animation files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-bpac": {
-          "description": "Auto Rename BP animation controller files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-bpe": {
-          "description": "Auto Rename BP entity files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-bpi": {
-          "description": "Auto Rename BP item files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-dialogue": {
-          "description": "Auto Rename BP dialogue files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-function": {
-          "description": "Auto Rename BP function files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-loot": {
-          "description": "Auto Rename BP loot files.",
-          "type": "boolean",
-          "default": false
-        },
-        "minecraft-pack-tools.auto-rename-recipe": {
-          "description": "Auto Rename BP recipe files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-trade": {
-          "description": "Auto Rename BP trade files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-rpa": {
-          "description": "Auto Rename RP animation files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-rpac": {
-          "description": "Auto Rename RP animation controller files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-at": {
-          "description": "Auto Rename RP attachable files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-render": {
-          "description": "Auto Rename RP render controller files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-rpe": {
-          "description": "Auto Rename RP entity files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-rpi": {
-          "description": "Auto Rename RP item files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-geo": {
-          "description": "Auto Rename RP model files.",
-          "type": "boolean",
-          "default": true
-        },
-        "minecraft-pack-tools.auto-rename-particle": {
-          "description": "Auto Rename RP particle files.",
-          "type": "boolean",
-          "default": true
         }
       }
     },
@@ -176,7 +91,6 @@
   },
   "dependencies": {
     "uuid": "^9.0.0",
-    "vscode": "^1.1.37",
     "ws": "^8.13.0"
   }
 }
