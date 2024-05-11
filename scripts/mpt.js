@@ -3,6 +3,19 @@ const fs = require("fs");
 const path = require("path");
 const AddonFilesRenamer = require("./AddonFilesRenamer");
 const AutoReloader = require("./AutoReloader");
+const AddonFilesMover = require("./AddonFilesMover");
+
+class Pack {
+  constructor(type, path) {
+    (this.type = type), (this.path = path);
+  }
+}
+
+class Addon {
+  constructor(bp, rp) {
+    (this.bpPath = bp.path), (this.rpPath = rp.path);
+  }
+}
 
 module.exports = class MPT {
   constructor() {
@@ -24,6 +37,7 @@ module.exports = class MPT {
       });
       if (this.bpFolderPaths.length > 0 || this.rpFolderPaths.length > 0) {
         new AddonFilesRenamer(this.bpFolderPaths[0], this.rpFolderPaths[0]);
+        new AddonFilesMover(this.bpFolderPaths[0], this.rpFolderPaths[0]);
         new AutoReloader();
       }
       console.log("MPT is now active");
@@ -47,23 +61,20 @@ module.exports = class MPT {
             if (Array.isArray(manifestData.modules)) {
               manifestData.modules.forEach((module) => {
                 if (module && module.type) {
-                  if (module.type === "data" || module.type === "script") {
-                    this.bpFolderPaths.push(filePath);
+                  if (module.type === "data") {
+                    this.bpFolderPaths.push(currentPath);
                     this.#hasBpManifest = true;
                   } else if (module.type === "resources") {
-                    this.rpFolderPaths.push(filePath);
+                    this.rpFolderPaths.push(currentPath);
                     this.#hasRpManifest = true;
+                    return;
                   }
                 } else {
-                  console.error(
-                    `Invalid manifest structure in ${filePath}. 'modules' or 'type' not found or improperly formatted.`
-                  );
+                  console.error(`Invalid manifest structure in ${filePath}. 'modules' or 'type' not found or improperly formatted.`);
                 }
               });
             } else {
-              console.error(
-                `Invalid manifest structure in ${filePath}. 'modules' is not an array.`
-              );
+              console.error(`Invalid manifest structure in ${filePath}. 'modules' is not an array.`);
             }
           } catch (error) {
             console.error(`Error processing ${filePath}:`, error);
@@ -73,18 +84,10 @@ module.exports = class MPT {
 
       // Check after processing manifestData.modules
       if (!this.#hasBpManifest) {
-        checkFolderNames(
-          currentPath,
-          /(bp0|Behavior|BP|_BP)/i,
-          this.bpFolderPaths
-        );
+        checkFolderNames(currentPath, /(bp0|Behavior|BP|_BP)/i, this.bpFolderPaths);
       }
       if (!this.#hasRpManifest) {
-        checkFolderNames(
-          currentPath,
-          /(rp0|Resource|RP|_RP)/i,
-          this.rpFolderPaths
-        );
+        checkFolderNames(currentPath, /(rp0|Resource|RP|_RP)/i, this.rpFolderPaths);
       }
 
       function checkFolderNames(currentPath, pattern, targetArray) {

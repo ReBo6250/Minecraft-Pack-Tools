@@ -1,6 +1,7 @@
 const vscode = require("vscode");
 const fs = require("fs");
 const path = require("path");
+const { openNewFile } = require("./Utils");
 /**
  * Automatically rename files in the addon folders.
  * @param { string } bpFolderPath
@@ -12,13 +13,8 @@ module.exports = class AddonFilesRenamer {
   }
 
   #startWatcher(bpFolderPath, rpFolderPath) {
-    const renameWatcher = vscode.workspace.createFileSystemWatcher(
-      `{${bpFolderPath},${rpFolderPath}}/**/*.json`,
-      true,
-      false,
-      false
-    );
-    renameWatcher.onDidChange(async (uri) => {
+    const watcher = vscode.workspace.createFileSystemWatcher(`{${bpFolderPath},${rpFolderPath}}/**/*.json`, true, false, true);
+    watcher.onDidChange(async (uri) => {
       if (uri.fsPath.includes(bpFolderPath)) {
         const key = uri.fsPath.replace(bpFolderPath, "").split("\\")[1];
         switch (key) {
@@ -37,9 +33,6 @@ module.exports = class AddonFilesRenamer {
           case "items":
             addSuffixToFile(uri.fsPath, "bpi");
             break;
-          case "loot_tables":
-            addSuffixToFile(uri.fsPath, "loot");
-            break;
           case "recipes":
             addSuffixToFile(uri.fsPath, "r");
             break;
@@ -52,6 +45,7 @@ module.exports = class AddonFilesRenamer {
           default:
             break;
         }
+        return;
       }
       if (uri.fsPath.includes(`${rpFolderPath}`)) {
         const key = uri.fsPath.replace(bpFolderPath, "").split("\\")[1];
@@ -83,6 +77,7 @@ module.exports = class AddonFilesRenamer {
           default:
             break;
         }
+        return;
       }
     });
 
@@ -91,30 +86,13 @@ module.exports = class AddonFilesRenamer {
       if (filePath.includes(` copy`) || filePath.includes(`.${suffix}`)) {
         return;
       }
-      const newFilePath = `${filePath.replace(
-        `${fileExtension}`,
-        ""
-      )}.${suffix}${fileExtension}`;
+      const newFilePath = `${filePath.replace(`${fileExtension}`, "")}.${suffix}${fileExtension}`;
+
       try {
         fs.renameSync(filePath, newFilePath);
-        // Close the current editor if it's associated with the modified file
-        const activeEditor = vscode.window.activeTextEditor;
-        if (activeEditor && activeEditor.document.uri.fsPath === filePath) {
-          vscode.commands
-            .executeCommand("workbench.action.closeActiveEditor")
-            .then(() => {
-              // Open the new file after closing the old one
-              vscode.workspace
-                .openTextDocument(newFilePath)
-                .then((document) => {
-                  vscode.window.showTextDocument(document);
-                });
-            });
-        }
-      } catch (error) {
-        console.error(`Error renaming ${filePath}:`, error);
-        return;
-      }
+
+        openNewFile(filePath, newFilePath);
+      } catch (error) {}
     }
   }
 };

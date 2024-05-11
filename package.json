@@ -2,7 +2,7 @@
   "name": "minecraft-pack-tools",
   "displayName": "Minecraft Pack Tools",
   "description": "Acode --install-extension my-extension-0.0.1.vsixn extension more convenient Minecraft addon development.",
-  "version": "4.0.2",
+  "version": "4.1.0",
   "engines": {
     "vscode": "^1.74.0"
   },
