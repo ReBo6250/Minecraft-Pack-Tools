@@ -2,7 +2,7 @@ const vscode = require("vscode");
 const fs = require("fs");
 const path = require("path");
 const AddonFilesRenamer = require("./AddonFilesRenamer");
-const AutoReloader = require("./AutoReloader");
+const AutoReloader = require("./AutoReloader_v2");
 const AddonFilesMover = require("./AddonFilesMover");
 
 class Pack {
